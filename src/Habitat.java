@@ -1,7 +1,10 @@
 import java.util.*;
 
 public class Habitat {
+    // коллекции. 3л
     public LinkedList<Employee> ObjCollection = new LinkedList<>();
+    public TreeSet<UUID> IdCollection = new TreeSet<>();
+    public HashMap<UUID, Double> BornTimeCollection = new HashMap<>();
 
     private float _timer1 = 0;
     private float _timer2 = 0;
@@ -23,6 +26,7 @@ public class Habitat {
         }
     }
 
+    // добавление в коллекции. 3л
     public void addToCollections(int i) {
         int empAmount = Employee.Amount;
 
@@ -32,5 +36,15 @@ public class Habitat {
 
         if(i == 0) ObjCollection.add(empAmount, new Worker((int) (lowBound + Math.random() * upBoundWidth), (int) (lowBound + Math.random() * upBoundHeight)));
         else ObjCollection.add(empAmount, new Manager((int) (lowBound + Math.random() * upBoundWidth), (int) (lowBound + Math.random() * upBoundHeight)));
+
+        UUID tmpID;
+        // Объект точно получит уникальный ИД
+        do{
+            tmpID = UUID.randomUUID();
+            ObjCollection.get(empAmount).setID(tmpID);
+        } while (IdCollection.contains(tmpID));
+
+        IdCollection.add(tmpID);
+        BornTimeCollection.put(tmpID, ObjCollection.get(empAmount).getBornTime());
     }
 }
