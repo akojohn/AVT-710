@@ -9,6 +9,27 @@ public class Habitat {
     private float _timer1 = 0;
     private float _timer2 = 0;
 
+    public WorkerAI ThreadWorkerAI = null;
+    public ManagerAI ThreadManagerAI = null;
+
+    public void start() {
+        // Запускаем потоки
+        if (ThreadWorkerAI == null) {
+            ThreadWorkerAI = new WorkerAI(ObjCollection);
+            ThreadWorkerAI.start();
+        }
+        if (ThreadManagerAI == null) {
+            ThreadManagerAI = new ManagerAI(ObjCollection);
+            ThreadManagerAI.start();
+        }
+    }
+
+    public void stop() {
+        // Останавливаем потоки
+        if (ThreadWorkerAI != null) ThreadWorkerAI.going = false;
+        if (ThreadManagerAI != null) ThreadManagerAI.going = false;
+    }
+
     // создание нового объекта. 1л
     // передаем не время прошедшее с начала симуляции, а время между кадрами
     public void update(double deltaTime) {

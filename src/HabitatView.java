@@ -39,6 +39,12 @@ public class HabitatView extends Canvas {
     private JTextField txtFieldLifeTimeWorker = new JTextField();
     private JTextField txtFieldLifeTimeManager = new JTextField();
 
+    private JRadioButton switchWorkerAI = new JRadioButton("WorkerAI");
+    private JRadioButton switchManagerAI = new JRadioButton("ManagerAI");
+
+    private JComboBox priorityWorkerAI = new JComboBox();
+    private JComboBox priorityManagerAI = new JComboBox();
+
     //меню бар
     private JMenuBar menuBar = new JMenuBar();
     private JMenu menuUI = new JMenu("Menu");
@@ -96,7 +102,6 @@ public class HabitatView extends Canvas {
 
         // Кнопки включения\выключения
         ButtonGroup buttonGroup = new ButtonGroup();
-
         buttonGroup.add(radioShowTime);
         radioShowTime.addActionListener(e -> _showingTimer = true);
         panelUI.add(radioShowTime);
@@ -126,28 +131,72 @@ public class HabitatView extends Canvas {
 
         //Поля ввода (время между генерацией | время жизни)
         txtFieldSpawnTimeWorker.setName("SpawnTimeWorker");
-        txtFieldSpawnTimeWorker.setBorder(BorderFactory.createTitledBorder("Time Spawn Worker"));
-        txtFieldSpawnTimeWorker.setPreferredSize(new Dimension(200, 40));
+        txtFieldSpawnTimeWorker.setBorder(BorderFactory.createTitledBorder("Spawn Wrk"));
+        txtFieldSpawnTimeWorker.setPreferredSize(new Dimension(95, 40));
         txtFieldSpawnTimeWorker.addActionListener(new ByTextFieldNameActionListener());
         panelUI.add(txtFieldSpawnTimeWorker);
 
         txtFieldSpawnTimeManager.setName("SpawnTimeManager");
-        txtFieldSpawnTimeManager.setBorder(BorderFactory.createTitledBorder("Time Spawn Manager"));
-        txtFieldSpawnTimeManager.setPreferredSize(new Dimension(200, 40));
+        txtFieldSpawnTimeManager.setBorder(BorderFactory.createTitledBorder("Spawn Mng"));
+        txtFieldSpawnTimeManager.setPreferredSize(new Dimension(95, 40));
         txtFieldSpawnTimeManager.addActionListener(new ByTextFieldNameActionListener());
         panelUI.add(txtFieldSpawnTimeManager);
 
         txtFieldLifeTimeWorker.setName("LifeTimeWorker");
-        txtFieldLifeTimeWorker.setBorder(BorderFactory.createTitledBorder("Life time Worker"));
-        txtFieldLifeTimeWorker.setPreferredSize(new Dimension(200, 40));
+        txtFieldLifeTimeWorker.setBorder(BorderFactory.createTitledBorder("LifeT Wrk"));
+        txtFieldLifeTimeWorker.setPreferredSize(new Dimension(95, 40));
         txtFieldLifeTimeWorker.addActionListener(new ByTextFieldNameActionListener());
         panelUI.add(txtFieldLifeTimeWorker);
 
         txtFieldLifeTimeManager.setName("LifeTimeManager");
-        txtFieldLifeTimeManager.setBorder(BorderFactory.createTitledBorder("Life time Manager"));
-        txtFieldLifeTimeManager.setPreferredSize(new Dimension(200, 40));
+        txtFieldLifeTimeManager.setBorder(BorderFactory.createTitledBorder("LifeT Mng"));
+        txtFieldLifeTimeManager.setPreferredSize(new Dimension(95, 40));
         txtFieldLifeTimeManager.addActionListener(new ByTextFieldNameActionListener());
         panelUI.add(txtFieldLifeTimeManager);
+
+        // элементы управления для лр 4
+        //Радио-кнопки потоков
+        JPanel th = new JPanel(new FlowLayout());
+        th.setPreferredSize(new Dimension(200,100));
+        th.setBorder(BorderFactory.createTitledBorder("Thread"));
+
+        switchWorkerAI.addActionListener(e -> {
+            if(switchWorkerAI.isSelected() == true) {
+                synchronized (_habitat.ThreadWorkerAI.locker) {
+                    _habitat.ThreadWorkerAI.sleeping = false;
+                    _habitat.ThreadWorkerAI.locker.notify();
+                }
+            }
+            else _habitat.ThreadWorkerAI.sleeping = true;
+        });
+        th.add(switchWorkerAI);
+
+        switchManagerAI.addActionListener(e -> {
+            if(switchManagerAI.isSelected() == true) {
+                synchronized (_habitat.ThreadManagerAI.locker) {
+                    _habitat.ThreadManagerAI.sleeping = false;
+                    _habitat.ThreadManagerAI.locker.notify();
+                }
+            }
+            else _habitat.ThreadManagerAI.sleeping = true;
+        });
+        th.add(switchManagerAI);
+
+        //Выпадающие списки для здания приоритетов потоков
+        priorityWorkerAI.setBorder(BorderFactory.createTitledBorder("Wrk Priority"));
+        priorityWorkerAI.setPreferredSize(new Dimension(90, 40));
+        for(int i = 0; i < 10; i++)
+            priorityWorkerAI.addItem(i+1);
+        priorityWorkerAI.addActionListener(e -> _habitat.ThreadWorkerAI.setPriority(priorityWorkerAI.getSelectedIndex() + 1));
+        th.add(priorityWorkerAI);
+
+        priorityManagerAI.setBorder(BorderFactory.createTitledBorder("Mng Priority"));
+        priorityManagerAI.setPreferredSize(new Dimension(90, 40));
+        for(int i = 0; i < 10; i++)
+            priorityManagerAI.addItem(i+1);
+        priorityManagerAI.addActionListener(e -> _habitat.ThreadManagerAI.setPriority(priorityManagerAI.getSelectedIndex() + 1));
+        th.add(priorityManagerAI);
+        panelUI.add(th);
 
         //Меню-бар
         menuUI.add(startMenu);
@@ -335,15 +384,21 @@ public class HabitatView extends Canvas {
 
     //вспмогательяные методы пауза. старт, стоп, продолжить
     private void startSim() {
-        for(Component tmp : panelUI.getComponents())
+        for(Component tmp : panelUI.getComponents()) {
+            for (Component tmpInner : ((Container) tmp).getComponents())
+                tmpInner.setEnabled(true);
             tmp.setEnabled(true);
+        }
+
         btnStart.setEnabled(false);
         startMenu.setEnabled(false);
 
         _firstRun = false;
         _simulating = true;
 
+        // лр 4. создание потоков в хэбитат
         _habitat = new Habitat();
+        _habitat.start();
         _timer = new Timer();
         _timer.schedule(new SimulationLoop(), 0, 10);
 
@@ -356,8 +411,12 @@ public class HabitatView extends Canvas {
     private void pauseSim() { _simulating = false; }
 
     private void stopSim() {
-        for(Component tmp : panelUI.getComponents())
+        for(Component tmp : panelUI.getComponents()) {
+            for (Component tmpInner : ((Container) tmp).getComponents())
+                tmpInner.setEnabled(false);
             tmp.setEnabled(false);
+        }
+
         btnStart.setEnabled(true);
         startMenu.setEnabled(true);
 
@@ -380,6 +439,7 @@ public class HabitatView extends Canvas {
             _graphics.setFont(new Font("Arial", Font.BOLD | Font.ITALIC, 30));
             _graphics.setColor(new Color(200, 170, 30, 255));
             _graphics.drawString(String.format("%.3f", ElapsedTime), midWidth, midHeight + 150);
+            _habitat.stop();
             _timer.cancel();
         }
         else {

@@ -19,5 +19,9 @@ public class Manager extends Employee{
     }
 
     public void move() {
+        if(super.getX() < HabitatView.Width + 30) {
+            super.setX(super.getX()+2);
+        }
+        else super.setX(-25);
     }
 }

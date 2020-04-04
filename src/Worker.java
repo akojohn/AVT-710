@@ -19,5 +19,9 @@ public class Worker extends Employee{
     }
 
     public void move() {
+        if(super.getY() < HabitatView.Height + 30) {
+            super.setY(super.getY()+1);
+        }
+        else super.setY(-25);
     }
 }

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class Employee implements IBehaviour {
+public abstract class Employee implements IBehaviour, Serializable {
     private UUID _ID;
     private double _bornTime;
     private int _x;
