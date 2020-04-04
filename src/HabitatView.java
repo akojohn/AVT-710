@@ -2,11 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;
+import java.io.*;
 import java.util.*;
 import java.util.Timer;
 
 public class HabitatView extends Canvas {
     private Habitat _habitat;
+    private Console _console;
+    private PipedReader _pipedReader;
 
     //Ссылка на таймер, время между кадрами, время симуляции
     public static double ElapsedTime;
@@ -44,6 +47,11 @@ public class HabitatView extends Canvas {
 
     private JComboBox priorityWorkerAI = new JComboBox();
     private JComboBox priorityManagerAI = new JComboBox();
+
+    private JButton saveObj = new JButton("save Obj");
+    private JButton loadObj = new JButton("load Obj");
+    private JButton openConsole = new JButton("Console");
+    private JMenuItem consoleMenu = new JMenuItem("console");
 
     //меню бар
     private JMenuBar menuBar = new JMenuBar();
@@ -198,6 +206,30 @@ public class HabitatView extends Canvas {
         th.add(priorityManagerAI);
         panelUI.add(th);
 
+        openConsole.addActionListener(e -> createConsole());
+        panelUI.add(openConsole);
+
+        saveObj.addActionListener(e -> {
+            try {
+                saveObject();
+            } catch (IOException e1) {
+                System.out.println("Ошибка при сохранении объектов");
+            }
+        });
+        panelUI.add(saveObj);
+
+        loadObj.addActionListener(e -> {
+            try {
+                loadObject();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (ClassNotFoundException e1) {
+                System.out.println("Ошибка при загрузке объектов");
+            }
+        });
+        panelUI.add(loadObj);
+
+
         //Меню-бар
         menuUI.add(startMenu);
         startMenu.addActionListener(e -> startSim());
@@ -205,11 +237,18 @@ public class HabitatView extends Canvas {
         stopMenu.addActionListener(e -> stopSim());
         menuUI.add(statMenu);
         statMenu.addActionListener(e -> showStats());
+        menuUI.add(consoleMenu);
+        consoleMenu.addActionListener(e -> createConsole());
         menuBar.add(menuUI);
         frameParent.setJMenuBar(menuBar);
 
         frameParent.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                try {
+                    saveConfig();
+                } catch (Exception ee) {
+                    System.out.println("Ошибка сохранения");
+                }
                 System.exit(0);
             }
         });
@@ -399,12 +438,19 @@ public class HabitatView extends Canvas {
         // лр 4. создание потоков в хэбитат
         _habitat = new Habitat();
         _habitat.start();
+
         _timer = new Timer();
         _timer.schedule(new SimulationLoop(), 0, 10);
 
         Employee.Amount = 0;
         Manager.Amount = 0;
         Worker.Amount = 0;
+
+        try {
+            loadConfig(); System.out.println("загрузка");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void continueSim(){ _simulating = true; }
@@ -444,6 +490,8 @@ public class HabitatView extends Canvas {
         }
         else {
             _graphics.drawString("Press Start", getWidth()/2, getHeight()/2);
+            try { loadConfig(); System.out.println("загрузка"); }
+            catch (Exception e) { System.out.println("Ошибка загрузки"); }
         }
     }
 
@@ -451,6 +499,182 @@ public class HabitatView extends Canvas {
         new HabitatView();
     }
 
+    void saveObject() throws IOException {
+        synchronized (_habitat.ObjCollection){
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("data.dat"));
+            oos.writeObject(_habitat.ObjCollection);
+            oos.close();
+        }
+    }
+
+    void loadObject() throws IOException, ClassNotFoundException {
+        synchronized (_habitat.ObjCollection){
+            FileInputStream f = new FileInputStream("data.dat");
+            ObjectInputStream ois = new ObjectInputStream(f);
+
+            _habitat.ObjCollection.clear();
+            _habitat.IdCollection.clear();
+            _habitat.BornTimeCollection.clear();
+
+            Employee.Amount = 0;
+            Worker.Amount = 0;
+            Manager.Amount =0;
+
+            LinkedList<Employee> tmp = null;
+
+            if(f.available() > 0)
+                tmp  = (LinkedList<Employee>) ois.readObject();
+            else
+                return;
+            ois.close();
+
+            for(Employee emp : tmp)
+            {
+                emp.setBornTime(ElapsedTime);
+                Employee.Amount++;
+                _habitat.IdCollection.add(emp.getID());
+                _habitat.BornTimeCollection.put(emp.getID(), emp.getBornTime());
+                if(emp instanceof Worker)
+                    Worker.Amount++;
+                else
+                    Manager.Amount++;
+            }
+            _habitat.ObjCollection = tmp;
+        }
+    }
+
+    void saveConfig() throws Exception{
+        BufferedWriter out = new BufferedWriter(new FileWriter("Config.txt"));
+
+        out.write(String.valueOf((Worker.Chance)));
+        out.write('\n');
+        out.write(String.valueOf((Worker.TimeBetweenSpawn)));
+        out.write('\n');
+        out.write(String.valueOf((Worker.LifeTime)));
+        out.write('\n');
+        out.write(String.valueOf((Manager.Chance)));
+        out.write('\n');
+        out.write(String.valueOf((Manager.TimeBetweenSpawn)));
+        out.write('\n');
+        out.write(String.valueOf((Manager.LifeTime)));
+
+        out.close();
+    }
+
+    void loadConfig() throws Exception{
+        BufferedReader in = new BufferedReader(new FileReader("Config.txt"));
+
+        Worker.Chance = Float.parseFloat(in.readLine());
+        Worker.TimeBetweenSpawn = Float.parseFloat(in.readLine());
+        Worker.LifeTime = Float.parseFloat(in.readLine());
+        Manager.Chance = Float.parseFloat(in.readLine());
+        Manager.TimeBetweenSpawn = Float.parseFloat(in.readLine());
+        Manager.LifeTime = Float.parseFloat(in.readLine());
+
+        txtFieldSpawnTimeWorker.setText(String.valueOf(Worker.TimeBetweenSpawn));
+        txtFieldSpawnTimeManager.setText(String.valueOf(Manager.TimeBetweenSpawn));
+
+        txtFieldLifeTimeWorker.setText(String.valueOf(Worker.LifeTime));
+        txtFieldLifeTimeManager.setText(String.valueOf(Manager.LifeTime));
+
+        sliderChanceWorker.setValue( (int)(Worker.Chance*100));
+        sliderChanceManager.setValue((int)(Manager.Chance*100));
+
+        in.close();
+    }
+
+    // лр 5 создание окна консоли
+    void createConsole(){
+        JDialog consoleFrame = new JDialog();
+        consoleFrame.setTitle("Console");
+        consoleFrame.setPreferredSize(new Dimension(500, 200));
+
+        JTextArea consoleText = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(consoleText);
+
+        consoleText.setText("dismiss - уволить всех, hire 999 нанять" +"\n");
+
+        _pipedReader = new PipedReader();
+        _console = new Console(consoleText, _habitat, _pipedReader);
+        _console.start();
+
+        consoleFrame.setModal(false);
+        consoleText.setFont(new Font("Consolas", Font.PLAIN, 16));
+        consoleText.setBackground(Color.BLACK);
+        consoleText.setForeground(Color.WHITE);
+        consoleText.setSelectedTextColor(Color.BLACK);
+        consoleText.setSelectionColor(Color.WHITE);
+        consoleText.setCaretColor(Color.WHITE);
+
+        consoleFrame.add(scrollPane);
+        consoleFrame.pack();
+        consoleFrame.setResizable(false);
+        consoleFrame.setVisible(true);
+
+        openConsole.setEnabled(false);
+        consoleMenu.setEnabled(false);
+
+        ConsoleThread consoleThread = new ConsoleThread(_pipedReader);
+        consoleThread.start();
+
+        consoleFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                consoleFrame.dispose();
+                openConsole.setEnabled(true);
+                consoleMenu.setEnabled(true);
+                consoleThread.going = false;
+                try {
+                    _pipedReader.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+    }
+
+    // лр 5
+    private class ConsoleThread extends Thread {
+        public boolean going = true;
+        PipedReader pr;
+
+        ConsoleThread(PipedReader pr) {
+            this.pr = pr;
+        }
+
+        public void run() {
+            while (going) {
+                try {
+                    if(pr.ready()) {
+                        int c = pr.read();
+                        if(c == 0)
+                            synchronized (_habitat.ObjCollection) {
+                            for (Iterator<Employee> it = _habitat.ObjCollection.iterator(); it.hasNext(); ) {
+                                Employee temp = it.next();
+                                if(temp instanceof Manager){
+                                    _habitat.IdCollection.remove(temp.getID());
+                                    _habitat.BornTimeCollection.remove(temp.getID());
+                                    it.remove();
+                                    Manager.Amount--;
+                                    Employee.Amount--;
+                                }
+                            }
+                        }
+                        else if(c == 1)
+                        {
+                            c = pr.read();
+                            synchronized (_habitat.ObjCollection) {
+                                for(int i = 0; i < c; i++)
+                                    _habitat.addToCollections(1);
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     //класс таймера
     private class SimulationLoop extends TimerTask {
         private double _pauseTime;

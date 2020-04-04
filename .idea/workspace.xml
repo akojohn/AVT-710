@@ -14,35 +14,19 @@
       </list>
     </option>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>drawString</find>
-      <find>_simulating</find>
-      <find>btnStart</find>
-      <find>radioShowTime</find>
-      <find>frameParent</find>
-      <find>Chance</find>
-      <find>sliderChanceWorker</find>
-    </findStrings>
-  </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="703" />
-    <option name="y" value="24" />
-    <option name="width" value="974" />
-    <option name="height" value="1047" />
-  </component>
-  <component name="ProjectId" id="1a5BjWUqgrhambf78sXCDnH8ZXP" />
+  <component name="ProjectId" id="1a5Dvhe8Dq1g7q4FFyl7h857Vca" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1560337784821" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1560345366320" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../labs4_v6" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -55,7 +39,7 @@
   <component name="RunManager">
     <configuration name="HabitatiView" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="HabitatView" />
-      <module name="labs4_v6" />
+      <module name="labs5_v6" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -75,28 +59,37 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="361" y="71" key="#Project_Structure" timestamp="1586016195173">
+    <state x="361" y="71" key="#Project_Structure" timestamp="1586016966135">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="71" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1586016195173" />
-    <state width="1342" height="194" key="GridCell.Tab.0.bottom" timestamp="1586016340519">
+    <state x="361" y="71" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1586016966135" />
+    <state width="1342" height="194" key="GridCell.Tab.0.bottom" timestamp="1586017707709">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1342" height="194" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586016340519" />
-    <state width="1342" height="194" key="GridCell.Tab.0.center" timestamp="1586016340519">
+    <state width="1342" height="194" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586017707709" />
+    <state width="1342" height="194" key="GridCell.Tab.0.center" timestamp="1586017707709">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1342" height="194" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586016340519" />
-    <state width="1342" height="194" key="GridCell.Tab.0.left" timestamp="1586016340519">
+    <state width="1342" height="194" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1586017707709" />
+    <state width="1342" height="194" key="GridCell.Tab.0.left" timestamp="1586017707709">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1342" height="194" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586016340519" />
-    <state width="1342" height="194" key="GridCell.Tab.0.right" timestamp="1586016340519">
+    <state width="1342" height="194" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1586017707709" />
+    <state width="1342" height="194" key="GridCell.Tab.0.right" timestamp="1586017707709">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1342" height="194" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586016340519" />
+    <state width="1342" height="194" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1586017707709" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Console.java</url>
+          <line>36</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="Employee.Amount != 0 &amp;&amp; Amount / Employee.Amount &lt; Chance" />
