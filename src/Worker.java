@@ -11,6 +11,12 @@ public class Worker extends Employee{
         super.setID();
     }
 
+    public Worker(int x, int y, String id){
+        super(x,y);
+        Amount++;
+        super.setID(id);
+    }
+
     static boolean isCreated() {
         if (Chance >= Math.random())
             return true;

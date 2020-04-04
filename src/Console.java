@@ -27,7 +27,7 @@ public class Console extends Thread {
 
     public void run()
     {
-        tern Patre1 = Pattern.compile("^ *?dismiss$",Pattern.MULTILINE);
+        Pattern re1 = Pattern.compile("^ *?dismiss$",Pattern.MULTILINE);
         Pattern re2 = Pattern.compile("^ *?hire ([0-9]{1,3})$",Pattern.MULTILINE);
 
         while (true)

@@ -11,8 +11,14 @@ public class Manager extends Employee{
         super.setID();
     }
 
+    public Manager(int x, int y, String id){
+        super(x,y);
+        Amount++;
+        super.setID(id);
+    }
+
     static boolean isCreated() {
-        if (Employee.Amount != 0 && Amount / (float) Employee.Amount < Chance)
+        if ( Amount / (float) (Employee.Amount + 1) < Chance)
             return true;
         else
             return false;

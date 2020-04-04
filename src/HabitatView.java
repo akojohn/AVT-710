@@ -9,6 +9,7 @@ import java.util.Timer;
 public class HabitatView extends Canvas {
     private Habitat _habitat;
     private Console _console;
+    public Client client;
     private PipedReader _pipedReader;
 
     //Ссылка на таймер, время между кадрами, время симуляции
@@ -451,10 +452,14 @@ public class HabitatView extends Canvas {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // лр 6. Создание экземпляра клиента, передача параметров. Вывод консоли клиента.
+        client = new Client(_habitat.ObjCollection, this);
+        java.awt.EventQueue.invokeLater(() -> client.setVisible(true));
     }
 
-    private void continueSim(){ _simulating = true; }
-    private void pauseSim() { _simulating = false; }
+    public void continueSim(){ _simulating = true; }
+    public void pauseSim() { _simulating = false; }
 
     private void stopSim() {
         for(Component tmp : panelUI.getComponents()) {
@@ -487,11 +492,26 @@ public class HabitatView extends Canvas {
             _graphics.drawString(String.format("%.3f", ElapsedTime), midWidth, midHeight + 150);
             _habitat.stop();
             _timer.cancel();
-        }
-        else {
+        } else {
             _graphics.drawString("Press Start", getWidth()/2, getHeight()/2);
-            try { loadConfig(); System.out.println("загрузка"); }
-            catch (Exception e) { System.out.println("Ошибка загрузки"); }
+
+            // лр 5. Загрузка конфигурационнного файла, если это первый запуск приложения
+            try {
+                loadConfig();
+                System.out.println("загрузка");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Ошибка загрузки");
+            }
+        }
+
+        // лр 6. Разрыв соединеня клиента
+        if(client != null){
+            //if(client.sk != null)
+            client.close();
+            client.dispose();
+            client.setVisible(false);
+            client = null;
         }
     }
 
