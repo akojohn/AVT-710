@@ -15,7 +15,8 @@ public class Gold extends Fish {
     public static float N1 = 5;
     public static int Sum1 = 0;
     public static double life_time = 20;
-    
+   
+    double v = 2;
     
     Gold(int x, int y){
         super(x,y);
@@ -24,8 +25,11 @@ public class Gold extends Fish {
         super.setID();
     }
     
-    public void move(){
-        
+    public void move(int windowWidth, int windowHeight){
+       setX((int) (getX() + (get_going() ? v : -v)));
+        if (getX() < 0 || getX() > windowWidth-50) {
+            set_going(!get_going());
+        }
     }
     static boolean isCreated() {
         if (P1 >= Math.random())
@@ -54,5 +58,5 @@ public class Gold extends Fish {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-   
+     
 }

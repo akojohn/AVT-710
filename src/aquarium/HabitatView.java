@@ -67,8 +67,12 @@ public class HabitatView extends JPanel {
         private Frame frame_list;
         private float _refTime = 5F;
         private float _refTimer = _refTime;
+        Image imgGuppy_up;
+        Image imgGuppy_down;
+	Image imgGold_right;
+        Image imgGold_left;
         
-       //JPanel panel;
+	//JPanel panel;
        
         
 	public HabitatView() {
@@ -77,9 +81,16 @@ public class HabitatView extends JPanel {
                 img1 = ImageIO.read(new File("Gold.png"));
                 img2 = ImageIO.read(new File("Guppy.png"));
                 imgBG = ImageIO.read(new File("BG.jpg"));
+                imgGuppy_up = ImageIO.read(new File("Guppy_up.png"));
+                imgGuppy_down = ImageIO.read(new File("Guppy_down.png"));
+                imgGold_left = ImageIO.read(new File("Gold_left.png"));
+                imgGold_right = ImageIO.read(new File("Gold_right.png"));
         } catch (IOException ex) {
             Logger.getLogger(HabitatView.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }   imgGuppy_up = imgGuppy_up.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
+            imgGuppy_down = imgGuppy_down.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
+            imgGold_left = imgGold_left.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
+            imgGold_right = imgGold_right.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
             img1 = img1.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
             img2 = img2.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
 		initComponents();
@@ -90,6 +101,7 @@ public class HabitatView extends JPanel {
                 System.out.println(Width);
                 addMouseListener(new PanelMouseListener());
                  addKeyListener((KeyListener) new processKeyEvent());
+                 
 	}
         private void initComponents() {
             Main.rbutton_show_time.setSelected(true);
@@ -171,6 +183,46 @@ public class HabitatView extends JPanel {
                 Main.button_start.setEnabled(true);
                 Main.stop_menu.setEnabled(false);
                 Main.button_stop.setEnabled(false);
+                
+                
+                
+            Main.switchGoldAI.addActionListener(e -> {
+            if( Main.switchGoldAI.isSelected() == true) {
+                synchronized (habitat.ThreadGoldAI.locker) {
+                    habitat.ThreadGoldAI.sleeping = false;
+                    habitat.ThreadGoldAI.locker.notify();
+                }
+            }
+            else habitat.ThreadGoldAI.sleeping = true;
+            });
+            Main.panel.add(Main.switchGoldAI);
+
+        Main.switchGuppyAI.addActionListener(e -> {
+            if(Main.switchGuppyAI.isSelected() == true) {
+                synchronized (habitat.ThreadGuppyAI.locker) {
+                    habitat.ThreadGuppyAI.sleeping = false;
+                    habitat.ThreadGuppyAI.locker.notify();
+                }
+            }
+            else habitat.ThreadGuppyAI.sleeping = true;
+        });
+        Main.panel.add(Main.switchGuppyAI);
+
+        //Выпадающие списки для здания приоритетов потоков
+        Main.priorityGoldAI.setBorder(BorderFactory.createTitledBorder("Gold Priority"));
+        Main.priorityGoldAI.setPreferredSize(new Dimension(90, 40));
+        for(int i = 0; i < 10; i++)
+            Main.priorityGoldAI.addItem(i+1);
+        Main.priorityGoldAI.addActionListener(e -> habitat.ThreadGoldAI.setPriority(Main.priorityGoldAI.getSelectedIndex() + 1));
+        Main.panel.add(Main.priorityGoldAI);
+
+        Main.priorityGuppyAI.setBorder(BorderFactory.createTitledBorder("Guppy Priority"));
+         Main.priorityGuppyAI.setPreferredSize(new Dimension(90, 40));
+        for(int i = 0; i < 10; i++)
+             Main.priorityGuppyAI.addItem(i+1);
+         Main.priorityGuppyAI.addActionListener(e -> habitat.ThreadGuppyAI.setPriority( Main.priorityGuppyAI.getSelectedIndex() + 1));
+         Main.panel.add( Main.priorityGuppyAI);
+        
               
 	}
             class processKeyEvent extends KeyAdapter {
@@ -261,9 +313,21 @@ public class HabitatView extends JPanel {
 		g.drawImage(imgBG, 0, 0, this);
 		//Отрисовывыаем объекты
 		for (Fish temp : habitat.ObjCollection)
-			if (temp instanceof Gold && (ElapsedTime - temp.getBornTime() < Gold.life_time)) g.drawImage(img1, temp.getX(), temp.getY(), this);
-			else if (temp instanceof Guppy && (ElapsedTime - temp.getBornTime() < Guppy.life_time)) g.drawImage(img2, temp.getX(), temp.getY(), this);
-			//Отрисовывваем таймер
+                {
+                    //if(!temp.get_going()&& temp instanceof Guppy) img2 =imgGuppy_down;
+                   // else img2 = imgGuppy_up;
+			if (temp instanceof Gold && (ElapsedTime - temp.getBornTime() < Gold.life_time)) {
+                            if(!temp.get_going())
+                            g.drawImage(imgGold_left, temp.getX(), temp.getY(), this);
+                            else g.drawImage(imgGold_right, temp.getX(), temp.getY(), this);
+                        }
+			else if (temp instanceof Guppy && (ElapsedTime - temp.getBornTime() < Guppy.life_time)) {
+                            if(temp.get_going())
+                            g.drawImage(imgGuppy_down, temp.getX(), temp.getY(), this);
+                            else g.drawImage(imgGuppy_up, temp.getX(), temp.getY(), this);
+                        }
+                }
+                        //Отрисовывваем таймер
 			if (show){
 				g.setColor(new Color(222, 222, 30, 255));
 				g.drawString(String.format("%.2f", ElapsedTime), 0, 16);
@@ -298,6 +362,7 @@ public class HabitatView extends JPanel {
                 Main.stop_menu.setEnabled(true);
                 Main.button_stop.setEnabled(true);
 		habitat = new Habitat();
+                habitat.start();
 		timer = new Timer();
 		timer.schedule(new SimulationLoop(), 0, 10);
                 
@@ -310,15 +375,17 @@ public class HabitatView extends JPanel {
 		simulating = false;
                 if(show_info==1){
                     int result = JOptionPane.showConfirmDialog(HabitatView.this,String.format("Рыбок всего: %d\nЗолотых рыбок: %d\nРыбок - гуппи: %d\n %.2f\n\n Остановить?", Fish.Sum, Gold.Sum1, Guppy.Sum2, ElapsedTime),"Result", JOptionPane.OK_CANCEL_OPTION);
-                    if (result != JOptionPane.OK_OPTION) {
+                    if (result == JOptionPane.OK_OPTION) {
                     firstRun=true;
                      Main.start_menu.setEnabled(true);
                     Main.button_start.setEnabled(true);
                     Main.stop_menu.setEnabled(false);
                     Main.button_stop.setEnabled(false);
                     ElapsedTime=0;
-                    repaint();        
+                    repaint();   
+                    habitat.stop();
                     return;
+                    
                      }
                     simulating = true;
                     return;
@@ -329,6 +396,7 @@ public class HabitatView extends JPanel {
                 Main.button_stop.setEnabled(false);
                 firstRun=true;
                 ElapsedTime=0;
+                habitat.stop();
                 repaint();                
 	}
         public void show_list_object(){

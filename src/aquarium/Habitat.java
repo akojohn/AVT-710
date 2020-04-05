@@ -25,6 +25,28 @@ public class Habitat {
      float timerGold = 0;
      float timerGuppy = 0;
    
+     public GoldAI ThreadGoldAI = null;
+     public GuppyAI ThreadGuppyAI = null;
+    
+
+    public void start() {
+        // Запускаем потоки
+         if (ThreadGuppyAI == null) {
+            ThreadGuppyAI = new GuppyAI(ObjCollection);
+            ThreadGuppyAI.start();
+        }
+        if (ThreadGoldAI == null) {
+            ThreadGoldAI = new GoldAI(ObjCollection);
+            ThreadGoldAI.start();
+        }
+       
+    }
+
+    public void stop() {
+        // Останавливаем потоки
+        if (ThreadGuppyAI != null) ThreadGuppyAI.going = false;
+        if (ThreadGoldAI != null) ThreadGoldAI.going = false;
+    }
     
     void Update(double timer){
       timerGold += timer;

@@ -17,6 +17,7 @@ import java.awt.event.KeyListener;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -57,6 +58,12 @@ public class Main extends JFrame{
 	public static int Height;
         static JSlider slider_show_info = new JSlider(JSlider.HORIZONTAL,0, 1, 0);
         
+        static JRadioButton switchGoldAI = new JRadioButton("GoldAI");
+        static JRadioButton switchGuppyAI = new JRadioButton("GuppyAI");
+
+        static JComboBox priorityGoldAI = new JComboBox();
+        static JComboBox priorityGuppyAI = new JComboBox();
+       
         
     /**
      * @param args the command line arguments
@@ -71,7 +78,7 @@ public class Main extends JFrame{
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(view);
-       
+        
         setJMenuBar(menuBar);
         slider_show_info.setBorder(BorderFactory.createTitledBorder("Show off/on"));
         slider_show_info.setPreferredSize(new Dimension(90,80));
@@ -83,7 +90,7 @@ public class Main extends JFrame{
         slider_show_info.setVisible(true);
         add(panel, BorderLayout.EAST);
         
-        repaint();
+       
         
         addComponentListener(new ComponentAdapter(){
 			public void componentResized(ComponentEvent e) {

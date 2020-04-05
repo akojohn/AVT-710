@@ -16,6 +16,8 @@ public class Guppy extends Fish{
         public static int Sum2 = 0;
         public static double life_time =30;
         
+        double v = 1;
+        
        Guppy(int x, int y){
         super(x,y);
         Sum2++;
@@ -29,8 +31,11 @@ public class Guppy extends Fish{
             return false;
     }
     @Override
-    public void move() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   public void move(int windowWidth, int windowHeight){
+       setY((int) (getY() + (get_going() ? v : -v)));
+        if (getY() < 0 || getY() > windowHeight-70) {
+            set_going(!get_going());
+        }
     }
 
     @Override
@@ -52,4 +57,5 @@ public class Guppy extends Fish{
     public void sety(int y) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+   
 }

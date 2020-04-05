@@ -13,11 +13,12 @@ import java.util.UUID;
  * @author Dexp
  */
 public abstract class Fish implements IBehaviour {
-   private int x;
+    private int x;
     private int y;
     public static int Sum=0;
     private UUID ID;
     private double bornTime;
+    private boolean isUpGoing;
     public Fish(){
         x = 0;
         y = 0;
@@ -59,4 +60,14 @@ public abstract class Fish implements IBehaviour {
     public UUID getID(){
         return ID;
     }
+
+     public boolean get_going(){
+        return isUpGoing;
+    }
+     public void set_going(boolean go){
+         isUpGoing = go;
+     }
+    public void move(int windowWidth, int windowHeight){
+    }
+    
 }

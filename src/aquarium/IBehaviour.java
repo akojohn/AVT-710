@@ -11,7 +11,7 @@ package aquarium;
  * @author Dexp
  */
 public interface IBehaviour {
-    void move();
+    void move(int windowWidth, int windowHeight);
     int getx();
     int gety();
     void setx(int x);
