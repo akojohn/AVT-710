@@ -6,13 +6,20 @@
 
 package aquarium;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -22,7 +29,11 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 
 /**
@@ -43,12 +54,16 @@ public class HabitatView extends JPanel {
 	Image img1;
 	Image img2;
 	Image imgBG;
-       
+        int show_info;
 	public static int Width;
 	public static int Height;
 
+        
+       //JPanel panel;
+       
+        
 	public HabitatView() {
-             
+         
             try {
                 img1 = ImageIO.read(new File("Gold.png"));
                 img2 = ImageIO.read(new File("Guppy.png"));
@@ -59,16 +74,125 @@ public class HabitatView extends JPanel {
             img1 = img1.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
             img2 = img2.getScaledInstance(widthImg, heigthImg, Image.SCALE_DEFAULT);
 		initComponents();
-                //startSim();
-		//stopSim();
                 repaint();
 		HabitatView.Width = this.getWidth();
 		HabitatView.Height = this.getHeight();
-                
+                System.out.println(Height);
+                System.out.println(Width);
+                addMouseListener(new PanelMouseListener());
+                 addKeyListener((KeyListener) new processKeyEvent());
 	}
         private void initComponents() {
-	
+            Main.rbutton_show_time.setSelected(true);
+            Main.slider_chance_Gold.setValue((int)(Gold.P1 * 100));
+            Main.slider_chance_Guppy.setValue((int)(Guppy.P2 * 100));
+            Main.txt_spawn_time_Gold.setText(String.valueOf(Gold.N1));
+            Main.txt_spawn_time_Guppy.setText(String.valueOf(Guppy.N2));
+            
+                
+                Main.button_start.addActionListener(e-> startSim());
+                Main.panel.add( Main.button_start);
+                Main.button_stop.addActionListener(e-> stopSim());
+                Main.panel.add( Main.button_stop);
+               
+                Main.rbutton_show_time.addActionListener(e-> show = true);
+                Main.rbutton_hide_time.addActionListener(e-> show = false);
+                Main.button_group.add(Main.rbutton_show_time);
+                Main.button_group.add(Main.rbutton_hide_time);
+                Main.panel.add(Main.rbutton_show_time);
+                Main.panel.add(Main.rbutton_hide_time);
+                
+                Main.slider_chance_Gold.setBorder(BorderFactory.createTitledBorder("Шанс \"Gold\""));
+                Main.slider_chance_Gold.setPreferredSize(new Dimension(200, 80));
+                Main.slider_chance_Gold.setMajorTickSpacing(10);
+                Main.slider_chance_Gold.setPaintTicks(true);
+                Main.slider_chance_Gold.setPaintLabels(true);
+                Main.slider_chance_Gold.addChangeListener(e -> Gold.P1 = (((JSlider)e.getSource()).getValue()) / 100f);
+                Main.panel.add(Main.slider_chance_Gold);
+                
+                Main.slider_show_info.addChangeListener(e -> show_info = (((JSlider)e.getSource()).getValue()));
+                
+                
+                
+                Main.slider_chance_Guppy.setBorder(BorderFactory.createTitledBorder("Шанс \"Guppy\""));
+                Main.slider_chance_Guppy.setPreferredSize(new Dimension(200, 80));
+                Main.slider_chance_Guppy.setMajorTickSpacing(10);
+                Main.slider_chance_Guppy.setPaintTicks(true);
+                Main.slider_chance_Guppy.setPaintLabels(true);
+                Main.slider_chance_Guppy.addChangeListener(e -> Guppy.P2 = (((JSlider)e.getSource()).getValue()) / 100f);
+                Main.panel.add(Main.slider_chance_Guppy);
+                
+                Main.txt_spawn_time_Gold.setName("Spawn_Gold");
+                Main.txt_spawn_time_Gold.setBorder(BorderFactory.createTitledBorder("Время создания \"Gold\""));
+                Main.txt_spawn_time_Gold.setPreferredSize(new Dimension(200, 40));
+                Main.txt_spawn_time_Gold.addActionListener(new Txt_name_ActionListener());
+                Main.panel.add(Main.txt_spawn_time_Gold);
+                
+                Main.txt_spawn_time_Guppy.setName("Spawn_Guppy");
+                Main.txt_spawn_time_Guppy.setBorder(BorderFactory.createTitledBorder("Время создания \"Guppy\""));
+                Main.txt_spawn_time_Guppy.setPreferredSize(new Dimension(200, 40));
+                Main.txt_spawn_time_Guppy.addActionListener(new Txt_name_ActionListener());
+                Main.panel.add(Main.txt_spawn_time_Guppy);
+                Main.menu.add(Main.start_menu);
+                Main.menu.add(Main.stop_menu);
+                Main.start_menu.addActionListener(e -> startSim());
+                Main.stop_menu.addActionListener(e -> stopSim());
+                Main.menuBar.add(Main.menu);
+               
+                Main.start_menu.setEnabled(true);
+                Main.button_start.setEnabled(true);
+                Main.stop_menu.setEnabled(false);
+                Main.button_stop.setEnabled(false);
+              
 	}
+            class processKeyEvent extends KeyAdapter {
+		 public void keyReleased(KeyEvent e) {
+            super.keyReleased(e);
+            if (e.getKeyCode() == KeyEvent.VK_T) {
+
+               show=!show;
+            }
+            if (e.getKeyCode() == KeyEvent.VK_B) {
+                if (!simulating)
+		startSim();
+            }
+            if (e.getKeyCode() == KeyEvent.VK_E) {
+               stopSim();
+
+            }
+        }
+	}
+        class PanelMouseListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            super.mouseClicked(e);
+            requestFocusInWindow();
+    } }   
+         public class Txt_name_ActionListener implements ActionListener {
+                    public void actionPerformed(ActionEvent e) {
+                         System.out.println("жопа");
+                        JTextField tmp = (JTextField) e.getSource();
+                        float value;
+                        try {
+                            value = Float.parseFloat(tmp.getText());
+                        } catch (NumberFormatException ee) {
+                            value = 0;
+                            JOptionPane.showMessageDialog(HabitatView.this,"Неверный ввод. Возвращено значение по умолчанию.","ERROR404",  JOptionPane.ERROR_MESSAGE);
+                        }
+                        if (value <= 0) value = 1;
+                        System.out.println(value);
+                        switch (tmp.getName()) {
+                            case ("Spawn_Gold"):
+                                Gold.N1= value;
+                                break;
+                            case ("Spawn_Guppy"):
+                                Guppy.N2 = value;
+                                break;
+                            
+                        }
+                        tmp.setText(String.valueOf(value));
+                    }
+                }
+        
         //Слушатель нажатия клавиш
 	
         private void update(){
@@ -94,24 +218,8 @@ public class HabitatView extends JPanel {
 			g.dispose();
                 }
                 else{
-                    if (!firstRun) {
-			int midWidth = Width / 2 - 100;
-			int midHeight = Height / 2;
-			g.setFont(new Font("Consolas", Font.PLAIN, 20));
-			g.setColor(new Color(255, 255, 0, 255));
-			g.drawString(String.format("Рыбок всего: %d", Fish.Sum), midWidth, midHeight);
-			g.setFont(new Font("Arial", Font.ITALIC, 18));
-			g.setColor(new Color(255, 255, 255, 255));
-			g.drawString(String.format("Золотых рыбок: %d", Gold.Sum1), midWidth, midHeight + 50);
-			g.setFont(new Font("Consolas", Font.BOLD, 22));
-			g.setColor(new Color(255, 0, 255, 255));
-			g.drawString(String.format("Рыбок - гуппи: %d", Guppy.Sum2), midWidth, midHeight + 100);
-			g.setFont(new Font("Arial", Font.BOLD, 30));
-			g.setColor(new Color(200, 170, 30, 255));
-			g.drawString(String.format("%.2f", ElapsedTime), midWidth, midHeight + 150);
-			timer.cancel();
-		}
-		else {
+                    if (firstRun) {
+			
                         g.setColor(Color.WHITE);
                         g.fillRect(0, 0, getWidth(), getHeight());
                         g.setFont(new Font("Consolas", Font.PLAIN, 20));
@@ -122,6 +230,7 @@ public class HabitatView extends JPanel {
 			
 			
 	}
+        
         private void clearViewScreen(Graphics g) {
 		g.setColor(Color.GRAY);
 		g.fillRect(0, 0, getWidth(), getHeight());
@@ -130,7 +239,10 @@ public class HabitatView extends JPanel {
 	 void startSim() {
 		firstRun = false;
 		simulating = true;
-
+                Main.start_menu.setEnabled(false);
+                Main.button_start.setEnabled(false);
+                Main.stop_menu.setEnabled(true);
+                Main.button_stop.setEnabled(true);
 		habitat = new Habitat();
 		timer = new Timer();
 		timer.schedule(new SimulationLoop(), 0, 10);
@@ -142,6 +254,27 @@ public class HabitatView extends JPanel {
         
         void stopSim() {
 		simulating = false;
+                if(show_info==1){
+                    int result = JOptionPane.showConfirmDialog(HabitatView.this,String.format("Рыбок всего: %d\nЗолотых рыбок: %d\nРыбок - гуппи: %d\n %.2f\n\n Продолжить?", Fish.Sum, Gold.Sum1, Guppy.Sum2, ElapsedTime),"Result", JOptionPane.YES_NO_OPTION);
+                    if (result != JOptionPane.YES_OPTION) {
+                    firstRun=true;
+                     Main.start_menu.setEnabled(true);
+                    Main.button_start.setEnabled(true);
+                    Main.stop_menu.setEnabled(false);
+                    Main.button_stop.setEnabled(false);
+                    ElapsedTime=0;
+                    repaint();        
+                    return;
+                     }
+                    simulating = true;
+                    return;
+                }
+                Main.start_menu.setEnabled(true);
+                Main.button_start.setEnabled(true);
+                Main.stop_menu.setEnabled(false);
+                Main.button_stop.setEnabled(false);
+                firstRun=true;
+                ElapsedTime=0;
                 repaint();                
 	}
 

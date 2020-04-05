@@ -31,7 +31,7 @@ public abstract class Fish implements IBehaviour {
         return y;
     }
     public void setX(int x1){
-    x = x1;
+        x = x1;
     }
     public void setY(int y1){
         y = y1;
