@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -24,15 +25,20 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -55,9 +61,12 @@ public class HabitatView extends JPanel {
 	Image img2;
 	Image imgBG;
         int show_info;
+        int show_obj = 1;
 	public static int Width;
 	public static int Height;
-
+        private Frame frame_list;
+        private float _refTime = 5F;
+        private float _refTimer = _refTime;
         
        //JPanel panel;
        
@@ -88,13 +97,17 @@ public class HabitatView extends JPanel {
             Main.slider_chance_Guppy.setValue((int)(Guppy.P2 * 100));
             Main.txt_spawn_time_Gold.setText(String.valueOf(Gold.N1));
             Main.txt_spawn_time_Guppy.setText(String.valueOf(Guppy.N2));
-            
-                
+            Main.txt_life_time_Gold.setText(String.valueOf(Gold.life_time));
+            Main.txt_life_time_Guppy.setText(String.valueOf(Guppy.life_time));
+             
+             
                 Main.button_start.addActionListener(e-> startSim());
                 Main.panel.add( Main.button_start);
                 Main.button_stop.addActionListener(e-> stopSim());
                 Main.panel.add( Main.button_stop);
-               
+                
+                Main.show_list.addActionListener(e-> show_list_object());
+                Main.panel.add(Main.show_list);
                 Main.rbutton_show_time.addActionListener(e-> show = true);
                 Main.rbutton_hide_time.addActionListener(e-> show = false);
                 Main.button_group.add(Main.rbutton_show_time);
@@ -133,6 +146,21 @@ public class HabitatView extends JPanel {
                 Main.txt_spawn_time_Guppy.setPreferredSize(new Dimension(200, 40));
                 Main.txt_spawn_time_Guppy.addActionListener(new Txt_name_ActionListener());
                 Main.panel.add(Main.txt_spawn_time_Guppy);
+                
+                Main.txt_life_time_Gold.setName("life_time_Gold");
+                Main.txt_life_time_Gold.setBorder(BorderFactory.createTitledBorder("Время жизни \"Gold\""));
+                Main.txt_life_time_Gold.setPreferredSize(new Dimension(200, 40));
+                Main.txt_life_time_Gold.addActionListener(new Txt_name_ActionListener());
+                Main.panel.add(Main.txt_life_time_Gold);
+                
+                Main.txt_life_time_Guppy.setName("life_time_Guppy");
+                Main.txt_life_time_Guppy.setBorder(BorderFactory.createTitledBorder("Время жизни \"Guppy\""));
+                Main.txt_life_time_Guppy.setPreferredSize(new Dimension(200, 40));
+                Main.txt_life_time_Guppy.addActionListener(new Txt_name_ActionListener());
+                Main.panel.add(Main.txt_life_time_Guppy);
+                
+                
+                
                 Main.menu.add(Main.start_menu);
                 Main.menu.add(Main.stop_menu);
                 Main.start_menu.addActionListener(e -> startSim());
@@ -169,7 +197,7 @@ public class HabitatView extends JPanel {
     } }   
          public class Txt_name_ActionListener implements ActionListener {
                     public void actionPerformed(ActionEvent e) {
-                         System.out.println("жопа");
+                        
                         JTextField tmp = (JTextField) e.getSource();
                         float value;
                         try {
@@ -187,6 +215,12 @@ public class HabitatView extends JPanel {
                             case ("Spawn_Guppy"):
                                 Guppy.N2 = value;
                                 break;
+                            case ("life_time_Gold"):
+                                Gold.life_time= value;
+                                break;
+                            case ("life_time_Guppy"):
+                                Guppy.life_time = value;
+                                break;
                             
                         }
                         tmp.setText(String.valueOf(value));
@@ -197,6 +231,26 @@ public class HabitatView extends JPanel {
 	
         private void update(){
 		habitat.Update(deltaTime);
+                _refTimer -= deltaTime;
+        if(_refTimer <= 0) {
+            _refTimer = _refTime;
+            synchronized (habitat.ObjCollection) {
+                for (Iterator<Fish> iterator = habitat.ObjCollection.iterator(); iterator.hasNext(); ) {
+                    Fish temp = iterator.next();
+
+                    if (temp instanceof Gold && (ElapsedTime - temp.getBornTime() > Gold.life_time)) --Gold.Sum1;
+                    else if (temp instanceof Guppy && (ElapsedTime - temp.getBornTime() > Guppy.life_time)) --Guppy.Sum2;
+
+                    if(Fish.Sum != Gold.Sum1+Guppy.Sum2) {
+                        UUID tmpID = temp.getID();
+                        habitat.idSet.remove(tmpID);
+                        habitat.birthdayMap.remove(tmpID);
+                        iterator.remove();
+                        Fish.Sum--;
+                    }
+                }
+            }
+        }
 		repaint();
 	}
         //Отрисовка наших объектов и таймера при помощи буфера
@@ -207,8 +261,8 @@ public class HabitatView extends JPanel {
 		g.drawImage(imgBG, 0, 0, this);
 		//Отрисовывыаем объекты
 		for (Fish temp : habitat.ObjCollection)
-			if (temp instanceof Gold) g.drawImage(img1, temp.getX(), temp.getY(), this);
-			else if (temp instanceof Guppy) g.drawImage(img2, temp.getX(), temp.getY(), this);
+			if (temp instanceof Gold && (ElapsedTime - temp.getBornTime() < Gold.life_time)) g.drawImage(img1, temp.getX(), temp.getY(), this);
+			else if (temp instanceof Guppy && (ElapsedTime - temp.getBornTime() < Guppy.life_time)) g.drawImage(img2, temp.getX(), temp.getY(), this);
 			//Отрисовывваем таймер
 			if (show){
 				g.setColor(new Color(222, 222, 30, 255));
@@ -255,8 +309,8 @@ public class HabitatView extends JPanel {
         void stopSim() {
 		simulating = false;
                 if(show_info==1){
-                    int result = JOptionPane.showConfirmDialog(HabitatView.this,String.format("Рыбок всего: %d\nЗолотых рыбок: %d\nРыбок - гуппи: %d\n %.2f\n\n Продолжить?", Fish.Sum, Gold.Sum1, Guppy.Sum2, ElapsedTime),"Result", JOptionPane.YES_NO_OPTION);
-                    if (result != JOptionPane.YES_OPTION) {
+                    int result = JOptionPane.showConfirmDialog(HabitatView.this,String.format("Рыбок всего: %d\nЗолотых рыбок: %d\nРыбок - гуппи: %d\n %.2f\n\n Остановить?", Fish.Sum, Gold.Sum1, Guppy.Sum2, ElapsedTime),"Result", JOptionPane.OK_CANCEL_OPTION);
+                    if (result != JOptionPane.OK_OPTION) {
                     firstRun=true;
                      Main.start_menu.setEnabled(true);
                     Main.button_start.setEnabled(true);
@@ -277,8 +331,38 @@ public class HabitatView extends JPanel {
                 ElapsedTime=0;
                 repaint();                
 	}
+        public void show_list_object(){
+         simulating = false;   
+        // if (show_obj==1){
+        JDialog container = new JDialog(frame_list, "Current object", true);
+        JTextArea textArea = new JTextArea();
+        JScrollPane scrollPane = new JScrollPane(textArea);
 
+        container.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                simulating=true;
+                container.dispose(); }
+        });
 
+        StringBuilder str = new StringBuilder();
+        for(Fish tmp : habitat.ObjCollection)
+            if(tmp instanceof Gold  && (ElapsedTime - tmp.getBornTime() < Gold.life_time))
+                str.append(String.format("Золотая рыбка, с ID: \"%s\", родилась в %.2f\n", tmp.getID(), tmp.getBornTime()));
+            else if(tmp instanceof Guppy && (ElapsedTime - tmp.getBornTime() < Guppy.life_time))
+                str.append(String.format("Гуппи - рыбка, с ID: \"%s\", родилась в %.2f\n", tmp.getID(), tmp.getBornTime()));
+
+        textArea.setText(str.toString());
+
+        textArea.setDisabledTextColor(Color.BLACK);
+        container.setPreferredSize(new Dimension(600, 200));
+        container.add(scrollPane);
+        textArea.setEnabled(false);
+        container.pack();
+        container.setVisible(true);   
+     //   }
+
+        }
+        
 	//класс таймера
 	private class SimulationLoop extends TimerTask { 
 		private double pauseTime;

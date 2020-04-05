@@ -6,6 +6,8 @@
 
 package aquarium;
 
+import java.util.UUID;
+
 /**
  *
  * @author Dexp
@@ -14,6 +16,8 @@ public abstract class Fish implements IBehaviour {
    private int x;
     private int y;
     public static int Sum=0;
+    private UUID ID;
+    private double bornTime;
     public Fish(){
         x = 0;
         y = 0;
@@ -31,9 +35,28 @@ public abstract class Fish implements IBehaviour {
         return y;
     }
     public void setX(int x1){
-        x = x1;
+    x = x1;
     }
     public void setY(int y1){
         y = y1;
     } 
+    public void setBornTime(double bornTime1){
+        bornTime = bornTime1;
+    }
+    public double getBornTime(){
+        return bornTime;
+    }
+
+    public void setID(){ 
+        ID = UUID.randomUUID(); 
+    }
+    public void setID(String id){
+        ID = UUID.fromString(id);
+    }
+    public void setID(UUID id){
+        ID = id;
+    }
+    public UUID getID(){
+        return ID;
+    }
 }

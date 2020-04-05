@@ -36,6 +36,7 @@ public class Main extends JFrame{
         static JPanel panel;
         static JButton button_start = new JButton("Старт");
         static JButton button_stop = new JButton("Стоп");
+        static JButton show_list = new JButton("Список объектов");
         static JRadioButton rbutton_show_time = new JRadioButton("Показывать время");
         static JRadioButton rbutton_hide_time = new JRadioButton("Скрывать время");
 
@@ -43,6 +44,10 @@ public class Main extends JFrame{
         static JSlider slider_chance_Guppy = new JSlider(JSlider.HORIZONTAL,0, 100, 0);
         static JTextField txt_spawn_time_Gold = new JTextField();
         static JTextField txt_spawn_time_Guppy = new JTextField();
+        
+        static JTextField txt_life_time_Gold = new JTextField();
+        static JTextField txt_life_time_Guppy = new JTextField();
+         
         static JMenuBar menuBar = new JMenuBar();
         static JMenu menu = new JMenu("Файл");
         static JMenuItem stop_menu = new JMenuItem("Стоп");
@@ -61,7 +66,7 @@ public class Main extends JFrame{
         panel = new JPanel(new FlowLayout());
         panel.setPreferredSize(new Dimension(220,600));
         view = new HabitatView();
-         setPreferredSize(new Dimension(1000, 700));
+        setPreferredSize(new Dimension(1000, 700));
         setMinimumSize(new Dimension(800, 700));
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

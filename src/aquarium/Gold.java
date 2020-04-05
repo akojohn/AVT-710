@@ -14,10 +14,14 @@ public class Gold extends Fish {
     public static float P1 = 0.3f;
     public static float N1 = 5;
     public static int Sum1 = 0;
+    public static double life_time = 20;
+    
     
     Gold(int x, int y){
         super(x,y);
         Sum1++;
+        super.setBornTime(HabitatView.ElapsedTime);
+        super.setID();
     }
     
     public void move(){

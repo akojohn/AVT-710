@@ -14,9 +14,13 @@ public class Guppy extends Fish{
  public static float P2 = 0.5f;
         public static float N2 = 3;
         public static int Sum2 = 0;
+        public static double life_time =30;
+        
        Guppy(int x, int y){
         super(x,y);
         Sum2++;
+        super.setBornTime(HabitatView.ElapsedTime);
+        super.setID();
     }
  static boolean isCreated() {
         if (P2 >= Math.random())
