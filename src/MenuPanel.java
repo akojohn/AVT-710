@@ -33,7 +33,6 @@ class MenuPanel extends JPanel {
 
         stopButton.setBounds(170, 10, 100, 30);
         stopButton.setBackground(buttonsColor);
-        lockStopButton();
         add(stopButton);
 
         informationCheckbox.setBounds(10, 50, 260, 30);
@@ -163,42 +162,6 @@ class MenuPanel extends JPanel {
         add(goldenProbabilityComboBox);
     }
 
-    void lockStartButton() {
-        startButton.setEnabled(false);
-    }
-
-    void lockStopButton() {
-        stopButton.setEnabled(false);
-    }
-
-    void unlockStartButton() {
-        startButton.setEnabled(true);
-    }
-
-    void unlockStopButton() {
-        stopButton.setEnabled(true);
-    }
-
-    JButton getStartButton() {
-        return startButton;
-    }
-
-    JButton getStopButton() {
-        return stopButton;
-    }
-
-    JRadioButton getShowTimeRadioButton() {
-        return showTimeRadioButton;
-    }
-
-    JRadioButton getHideTimeRadioButton() {
-        return hideTimeRadioButton;
-    }
-
-    boolean isViewInformationChecked() {
-        return informationCheckbox.getState();
-    }
-
     private boolean isNumber(String string) {
         for (int i = 0; i < string.length(); i++) {
             if (!isDigit(string.charAt(i))) {
@@ -208,12 +171,5 @@ class MenuPanel extends JPanel {
         return true;
     }
 
-    void showTime() {
-        showTimeRadioButton.setSelected(true);
-    }
-
-    void hideTime() {
-        hideTimeRadioButton.setSelected(true);
-    }
 
 }

@@ -1,28 +1,17 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
-
-class Habitat implements Serializable {
+//класс-модель программы. Хранит списки объектов (рыбок), содержит метод update, вызывающийся по
+// таймеру и получающий на вход время, прошедшее от начала симуляции. В данном методе генерируются новые объекты.
+class Habitat {
     private int width = 800;
-    private int height = 1000;
+    private int height = 800;
+    private boolean willShowStatistics = false;
 
     private FishList fishList = new FishList();
-    private HashSet<Long> idSet = new HashSet<>();
-    private TreeMap<Long, Long> birthdayMap = new TreeMap<Long, Long>();
-
-    transient GoldenAI goldenAI = new GoldenAI(fishList, width, height);
-    transient GuppyAI guppyAI = new GuppyAI(fishList, width, height);
-
-    void refreshAI() {
-        if (goldenAI == null) {
-            goldenAI = new GoldenAI(fishList, width, height);
-        }
-        if (guppyAI == null) {
-            guppyAI = new GuppyAI(fishList, width, height);
-        }
-    }
+    private HashSet<Long> idSet = new HashSet<>();//хранение и поиск уникальных айди
+    private TreeMap<Long, Long> birthdayMap = new TreeMap<Long, Long>();//время рождения объектов
 
     int getHeight() {
         return height;
@@ -32,51 +21,23 @@ class Habitat implements Serializable {
         return width;
     }
 
-    void pauseGuppyAI() {
-        guppyAI.pause();
-    }
-
-    void unpauseGuppyAI() {
-        guppyAI.unpause();
-    }
-
-    void pauseGoldenAI() {
-        goldenAI.pause();
-    }
-
-    void unpauseGoldenAI() {
-        goldenAI.unpause();
-    }
-
-    void setGoldenAIPriority(int priority) {
-        goldenAI.setPriority(priority);
-    }
-
-    void setGuppyAIPriority(int priority) {
-        guppyAI.setPriority(priority);
-    }
-
     void update(long time) {
-        synchronized (fishList) {
-            if (fishList.wasFishSpawned(time, width, height, Guppy.class, generateId())) {
-                birthdayMap.put(fishList.getLast().getId(), time);
+        if (fishList.wasFishSpawned(time, width, height, Guppy.class, generateId())) {
+            birthdayMap.put(fishList.getLast().getId(), time);
+        }
+        if (fishList.wasFishSpawned(time, width, height, Golden.class, generateId())) {
+            birthdayMap.put(fishList.getLast().getId(), time);
+        }
+        ArrayList<Long> deletedIdArray = new ArrayList<Long>();
+        for(Map.Entry<Long, Long> entry : birthdayMap.entrySet()) {
+            if (time - entry.getValue() > fishList.getFishById(entry.getKey()).getLifeTime()) {
+                fishList.remove(fishList.getFishById(entry.getKey()));
+                idSet.remove(entry.getKey());
+                deletedIdArray.add(entry.getKey());
             }
-            if (fishList.wasFishSpawned(time, width, height, Golden.class, generateId())) {
-                birthdayMap.put(fishList.getLast().getId(), time);
-            }
-            ArrayList<Long> deletedIdArray = new ArrayList<Long>();
-
-            for(Map.Entry<Long, Long> entry : birthdayMap.entrySet()) {
-                if (time - entry.getValue() > fishList.getFishById(entry.getKey()).getLifeTime()) {
-                    fishList.remove(fishList.getFishById(entry.getKey()));
-                    idSet.remove(entry.getKey());
-                    deletedIdArray.add(entry.getKey());
-                }
-            }
-            for(Long id : deletedIdArray) {
-                birthdayMap.remove(id);
-            }
-            //fishList.move(width, height);
+        }
+        for(Long id : deletedIdArray) {
+            birthdayMap.remove(id);
         }
     }
 
@@ -84,10 +45,8 @@ class Habitat implements Serializable {
         return fishList;
     }
 
-    void clearCollections() {
-        fishList.clear();
-        idSet.clear();
-        birthdayMap.clear();
+    HashSet<Long> getHashSet(){
+        return idSet;
     }
 
     TreeMap<Long, Long> getTreeMap(){
@@ -102,7 +61,15 @@ class Habitat implements Serializable {
         this.width = width;
     }
 
-    private long generateId() {
+    void changeShowingStatistics() {
+        willShowStatistics = !willShowStatistics;
+    }
+
+    boolean isWillShowStatistics() {
+        return willShowStatistics;
+    }
+
+    long generateId() {
         long id = (long) (Math.random() * 100);
         while (idSet.contains(id)) {
             id = (long) (Math.random() * 100);
