@@ -8,8 +8,17 @@ class Menu extends JMenuBar {
     private JRadioButtonMenuItem showTimeMenuItem = new JRadioButtonMenuItem("Показать время генерации");
     private JRadioButtonMenuItem hideTimeMenuItem = new JRadioButtonMenuItem("Скрыть время генерации", true);
     private JCheckBoxMenuItem informationCheckBoxMenuItem = new JCheckBoxMenuItem("Показать статистику");
+    private JMenuItem consoleMenuItem = new JMenuItem("Консоль");
+    private JMenuItem saveFishesMenuItem = new JMenuItem("Сохранить");
+    private JMenuItem loadFishesMenuItem = new JMenuItem("Загрузить");
 
     Menu() {
+        JMenu mainMenu = new JMenu("Главное меню");
+        mainMenu.setBackground(new Color(234, 192, 243));
+        mainMenu.add(consoleMenuItem);
+        mainMenu.add(saveFishesMenuItem);
+        mainMenu.add(loadFishesMenuItem);
+
 
         JMenu simulationMenu = new JMenu("Симуляция");
         setBackground(new Color(234, 192, 243));
@@ -51,6 +60,7 @@ class Menu extends JMenuBar {
         settingMenu.add(showTimeMenuItem);
         settingMenu.add(hideTimeMenuItem);
 
+        add(mainMenu);
         add(simulationMenu);
         add(settingMenu);
     }
@@ -61,6 +71,18 @@ class Menu extends JMenuBar {
 
     JMenuItem getStartSimulationMenuItem() {
         return startSimulationMenuItem;
+    }
+
+    JMenuItem getConsoleMenuItem() {
+        return consoleMenuItem;
+    }
+
+    JMenuItem getLoadFishesMenuItem() {
+        return loadFishesMenuItem;
+    }
+
+    JMenuItem getSaveFishesMenuItem() {
+        return saveFishesMenuItem;
     }
 
     JRadioButtonMenuItem getHideTimeMenuItem() {
