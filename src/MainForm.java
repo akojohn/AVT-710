@@ -13,13 +13,16 @@ class MainForm extends JFrame {
 
         add(settingsPanel);
         add(settingsPanel, BorderLayout.EAST);
+
         timePanel.setBackground(new Color(217, 214, 243));
         timePanel.setPreferredSize(new Dimension(0, 30));
         timePanel.setVisible(false);
         timePanel.add(timeLabel);
         add(timePanel, BorderLayout.SOUTH);
+
         drawingPanel.setBackground(new Color(175, 218, 243));
         add(drawingPanel);
+
         setJMenuBar(menu);
     }
 
@@ -129,6 +132,18 @@ class MainForm extends JFrame {
 
     JMenuItem getStopSimulationMenuItem() {
         return menu.getStopSimulationMenuItem();
+    }
+
+    JMenuItem getConsoleMenuItem() {
+        return menu.getConsoleMenuItem();
+    }
+
+    JMenuItem getLoadFishesMenuItem() {
+        return menu.getLoadFishesMenuItem();
+    }
+
+    JMenuItem getSaveFishesMenuItem() {
+        return menu.getSaveFishesMenuItem();
     }
 
     JRadioButtonMenuItem getHideTimeMenuItem() {
