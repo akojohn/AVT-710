@@ -1,17 +1,28 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
-//класс-модель программы. Хранит списки объектов (рыбок), содержит метод update, вызывающийся по
-// таймеру и получающий на вход время, прошедшее от начала симуляции. В данном методе генерируются новые объекты.
-class Habitat {
+
+class Habitat implements Serializable {
     private int width = 800;
-    private int height = 800;
-    private boolean willShowStatistics = false;
+    private int height = 1000;
 
     private FishList fishList = new FishList();
-    private HashSet<Long> idSet = new HashSet<>();//хранение и поиск уникальных айди
-    private TreeMap<Long, Long> birthdayMap = new TreeMap<Long, Long>();//время рождения объектов
+    private HashSet<Long> idSet = new HashSet<>();
+    private TreeMap<Long, Long> birthdayMap = new TreeMap<Long, Long>();
+
+    transient GoldenAI goldenAI = new GoldenAI(fishList, width, height);
+    transient GuppyAI guppyAI = new GuppyAI(fishList, width, height);
+
+    void refreshAI() {
+        if (goldenAI == null) {
+            goldenAI = new GoldenAI(fishList, width, height);
+        }
+        if (guppyAI == null) {
+            guppyAI = new GuppyAI(fishList, width, height);
+        }
+    }
 
     int getHeight() {
         return height;
@@ -21,23 +32,51 @@ class Habitat {
         return width;
     }
 
+    void pauseGuppyAI() {
+        guppyAI.pause();
+    }
+
+    void unpauseGuppyAI() {
+        guppyAI.unpause();
+    }
+
+    void pauseGoldenAI() {
+        goldenAI.pause();
+    }
+
+    void unpauseGoldenAI() {
+        goldenAI.unpause();
+    }
+
+    void setGoldenAIPriority(int priority) {
+        goldenAI.setPriority(priority);
+    }
+
+    void setGuppyAIPriority(int priority) {
+        guppyAI.setPriority(priority);
+    }
+
     void update(long time) {
-        if (fishList.wasFishSpawned(time, width, height, Guppy.class, generateId())) {
-            birthdayMap.put(fishList.getLast().getId(), time);
-        }
-        if (fishList.wasFishSpawned(time, width, height, Golden.class, generateId())) {
-            birthdayMap.put(fishList.getLast().getId(), time);
-        }
-        ArrayList<Long> deletedIdArray = new ArrayList<Long>();
-        for(Map.Entry<Long, Long> entry : birthdayMap.entrySet()) {
-            if (time - entry.getValue() > fishList.getFishById(entry.getKey()).getLifeTime()) {
-                fishList.remove(fishList.getFishById(entry.getKey()));
-                idSet.remove(entry.getKey());
-                deletedIdArray.add(entry.getKey());
+        synchronized (fishList) {
+            if (fishList.wasFishSpawned(time, width, height, Guppy.class, generateId())) {
+                birthdayMap.put(fishList.getLast().getId(), time);
             }
-        }
-        for(Long id : deletedIdArray) {
-            birthdayMap.remove(id);
+            if (fishList.wasFishSpawned(time, width, height, Golden.class, generateId())) {
+                birthdayMap.put(fishList.getLast().getId(), time);
+            }
+            ArrayList<Long> deletedIdArray = new ArrayList<Long>();
+
+            for(Map.Entry<Long, Long> entry : birthdayMap.entrySet()) {
+                if (time - entry.getValue() > fishList.getFishById(entry.getKey()).getLifeTime()) {
+                    fishList.remove(fishList.getFishById(entry.getKey()));
+                    idSet.remove(entry.getKey());
+                    deletedIdArray.add(entry.getKey());
+                }
+            }
+            for(Long id : deletedIdArray) {
+                birthdayMap.remove(id);
+            }
+            //fishList.move(width, height);
         }
     }
 
@@ -45,8 +84,10 @@ class Habitat {
         return fishList;
     }
 
-    HashSet<Long> getHashSet(){
-        return idSet;
+    void clearCollections() {
+        fishList.clear();
+        idSet.clear();
+        birthdayMap.clear();
     }
 
     TreeMap<Long, Long> getTreeMap(){
@@ -61,15 +102,7 @@ class Habitat {
         this.width = width;
     }
 
-    void changeShowingStatistics() {
-        willShowStatistics = !willShowStatistics;
-    }
-
-    boolean isWillShowStatistics() {
-        return willShowStatistics;
-    }
-
-    long generateId() {
+    private long generateId() {
         long id = (long) (Math.random() * 100);
         while (idSet.contains(id)) {
             id = (long) (Math.random() * 100);
