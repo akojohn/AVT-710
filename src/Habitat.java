@@ -6,7 +6,7 @@ import java.util.TreeMap;
 
 class Habitat implements Serializable {
     private int width = 800;
-    private int height = 1000;
+    private int height = 800;
 
     private FishList fishList = new FishList();
     private HashSet<Long> idSet = new HashSet<>();

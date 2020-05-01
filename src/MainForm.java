@@ -10,7 +10,6 @@ class MainForm extends JFrame {
 
     MainForm() {
         setTitle("Aquarium");
-
         add(settingsPanel);
         add(settingsPanel, BorderLayout.EAST);
 

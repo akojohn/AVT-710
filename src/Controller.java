@@ -348,7 +348,6 @@ class Controller implements StatisticForm.OnDialogListener {
 
     void saveSettings() throws IOException {
         File file = new File("settings.txt");
-        //System.out.println("kek");
         FileOutputStream fileOutputStream = new FileOutputStream(file);
 
         String settings = "";
@@ -367,9 +366,7 @@ class Controller implements StatisticForm.OnDialogListener {
         fileOutputStream.close();
     }
 
-    //todo
     void loadSettings() {
-//
         try {
             String str;
             BufferedReader br = new BufferedReader(new FileReader("settings.txt"));

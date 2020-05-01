@@ -81,9 +81,9 @@ class SettingsPanel extends JPanel {
         add(informationCheckbox);
 
         ButtonGroup timeInformation = new ButtonGroup();
-        showTimeRadioButton.setBounds(10, 100, 200, 40);
+        showTimeRadioButton.setBounds(10, 75, 200, 40);
         showTimeRadioButton.setBackground(menuColor);
-        hideTimeRadioButton.setBounds(10, 130, 200, 40);
+        hideTimeRadioButton.setBounds(10, 110, 200, 40);
         hideTimeRadioButton.setBackground(menuColor);
         timeInformation.add(showTimeRadioButton);
         timeInformation.add(hideTimeRadioButton);
@@ -91,18 +91,18 @@ class SettingsPanel extends JPanel {
         add(hideTimeRadioButton);
 
         JLabel settingsTitleLabel = new JLabel("НАСТРОЙКИ ГЕНЕРАЦИИ");
-        settingsTitleLabel.setBounds(70, 180, 150, 20);
+        settingsTitleLabel.setBounds(70, 150, 150, 20);
         add(settingsTitleLabel);
 
         JLabel enterIntervalPrompt = new JLabel("1) Введите в окошки время в секундах");
-        enterIntervalPrompt.setBounds(30, 210, 300, 20);
+        enterIntervalPrompt.setBounds(30, 180, 300, 20);
         enterIntervalPrompt.setFont(italicFont12);
         add(enterIntervalPrompt);
 
         JLabel guppyIntervalPrompt = new JLabel("Период создания гуппи:");
-        guppyIntervalPrompt.setBounds(10, 260, 150, 20);
+        guppyIntervalPrompt.setBounds(10, 210, 150, 20);
 
-        guppyIntervalTextField.setBounds(175, 260, 40, 20);
+        guppyIntervalTextField.setBounds(175, 210, 40, 20);
         guppyIntervalTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -124,9 +124,9 @@ class SettingsPanel extends JPanel {
         add(guppyIntervalTextField);
 
         JLabel goldenIntervalPrompt = new JLabel("Период создания золотой:");
-        goldenIntervalPrompt.setBounds(10, 300, 200, 20);
+        goldenIntervalPrompt.setBounds(10, 240, 200, 20);
 
-        goldenIntervalTextField.setBounds(175, 300, 40, 20);
+        goldenIntervalTextField.setBounds(175, 240, 40, 20);
         goldenIntervalTextField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
@@ -148,17 +148,17 @@ class SettingsPanel extends JPanel {
         add(goldenIntervalTextField);
 
         JLabel enterProbabilityPrompt = new JLabel("2) Выберите вероятность");
-        enterProbabilityPrompt.setBounds(30, 340, 300, 20);
+        enterProbabilityPrompt.setBounds(30, 270, 300, 20);
         enterProbabilityPrompt.setFont(italicFont12);
         add(enterProbabilityPrompt);
 
         JLabel guppyProbabilityLabel = new JLabel("Гуппи");
-        guppyProbabilityLabel.setBounds(50, 380, 300, 20);
+        guppyProbabilityLabel.setBounds(50, 300, 300, 20);
         //guppyProbabilityLabel.setFont(italicFont12);
         add(guppyProbabilityLabel);
 
         JLabel goldenProbabilityLabel = new JLabel("Золотые");
-        goldenProbabilityLabel.setBounds(50, 470, 300, 20);
+        goldenProbabilityLabel.setBounds(50, 380, 300, 20);
         //goldenProbabilityLabel.setFont(italicFont12);
         add(goldenProbabilityLabel);
 
@@ -175,11 +175,11 @@ class SettingsPanel extends JPanel {
         guppyProbabilitySliderLabels.put(10, new JLabel("100"));
 
         guppyProbabilitySlider.setLabelTable(guppyProbabilitySliderLabels);
-        guppyProbabilitySlider.setBounds(10, 410, 250, 50);
+        guppyProbabilitySlider.setBounds(10, 330, 250, 50);
         guppyProbabilitySlider.setBackground(menuColor);
 
         JLabel guppyProbabilityValueLabel = new JLabel(" " + (int) (new Guppy().getSpawnProbability() * 100) + "%");
-        guppyProbabilityValueLabel.setBounds(260, 410, 300, 20);
+        guppyProbabilityValueLabel.setBounds(260, 330, 300, 20);
         add(guppyProbabilityValueLabel);
 
         guppyProbabilitySlider.addChangeListener(e -> {
@@ -196,7 +196,7 @@ class SettingsPanel extends JPanel {
         }
         goldenProbabilityComboBox = new JComboBox<>(goldenProbabilityComboBoxModel);
         goldenProbabilityComboBox.setSelectedIndex((int) (new Golden().getSpawnProbability() * 10));
-        goldenProbabilityComboBox.setBounds(20, 500, 180, 30);
+        goldenProbabilityComboBox.setBounds(20, 410, 180, 30);
         goldenProbabilityComboBox.addActionListener(e -> {
             Golden.setSpawnProbability((double)(int)(goldenProbabilityComboBox.getSelectedItem()) / 10);
         });
@@ -212,34 +212,35 @@ class SettingsPanel extends JPanel {
         }
 
         JLabel guppyLifeTimePrompt = new JLabel("Срок жизни гуппи (0 - 9):");
-        guppyLifeTimePrompt.setBounds(10, 550, 200, 20);
+        guppyLifeTimePrompt.setBounds(10, 440, 200, 20);
         add(guppyLifeTimePrompt);
 
-        guppyLifeTimeTextField.setBounds(175, 550, 40, 20);
+        guppyLifeTimeTextField.setBounds(175, 440, 40, 20);
         guppyLifeTimeTextField.setText("" + new Guppy().getLifeTime());
         add(guppyLifeTimeTextField);
 
         JLabel goldenLifeTimePrompt = new JLabel("Срок жизни золотой (0 - 9):");
-        goldenLifeTimePrompt.setBounds(10, 575, 200, 20);
+        goldenLifeTimePrompt.setBounds(10, 470, 200, 20);
         add(goldenLifeTimePrompt);
 
-        goldenLifeTimeTextField.setBounds(175, 575, 40, 20);
+        goldenLifeTimeTextField.setBounds(175, 470, 40, 20);
         goldenLifeTimeTextField.setText("" + new Golden().getLifeTime());
         add(goldenLifeTimeTextField);
 
-        updateLifeTimeButton.setBounds(10, 610, 205, 30);
+        updateLifeTimeButton.setBounds(10, 500, 205, 30);
         updateLifeTimeButton.setBackground(buttonsColor);
         add(updateLifeTimeButton);
 
-        showCurrentObject.setBounds(10, 640, 205, 30);
+        showCurrentObject.setBounds(10, 530, 205, 30);
         showCurrentObject.setBackground(buttonsColor);
         add(showCurrentObject);
 
-        pauseGuppyAI.setBounds(10, 670, 205, 30);
+        pauseGuppyAI.setBounds(10, 560, 205, 30);
         pauseGuppyAI.setBackground(buttonsColor);
         add(pauseGuppyAI);
 
-        unpauseGuppyAI.setBounds(10, 700, 205, 30);
+        unpauseGuppyAI.setBounds(10, 590, 205, 30);
+
         unpauseGuppyAI.setBackground(buttonsColor);
         unpauseGuppyAI.setEnabled(false);
         add(unpauseGuppyAI);
@@ -259,16 +260,16 @@ class SettingsPanel extends JPanel {
         guppyPriorityComboBox.setSelectedIndex(4);
         goldenPriorityComboBox.setSelectedIndex(4);
 
-        guppyPriorityComboBox.setBounds(220, 670, 50, 30);
-        goldenPriorityComboBox.setBounds(220, 730, 50, 30);
+        guppyPriorityComboBox.setBounds(220, 560, 50, 30);
+        goldenPriorityComboBox.setBounds(220, 620, 50, 30);
         add(guppyPriorityComboBox);
         add(goldenPriorityComboBox);
 
-        pauseGoldenAI.setBounds(10, 730, 205, 30);
+        pauseGoldenAI.setBounds(10, 620, 205, 30);
         pauseGoldenAI.setBackground(buttonsColor);
         add(pauseGoldenAI);
 
-        unpauseGoldenAI.setBounds(10, 760, 205, 30);
+        unpauseGoldenAI.setBounds(10, 650, 205, 30);
         unpauseGoldenAI.setBackground(buttonsColor);
         unpauseGoldenAI.setEnabled(false);
         add(unpauseGoldenAI);
