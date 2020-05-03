@@ -16,7 +16,7 @@ public class Gold extends Fish {
     public static int Sum1 = 0;
     public static double life_time = 20;
    
-    double v = 2;
+    double v = 1;
     
     Gold(int x, int y){
         super(x,y);

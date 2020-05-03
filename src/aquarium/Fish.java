@@ -6,14 +6,15 @@
 
 package aquarium;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  *
  * @author Dexp
  */
-public abstract class Fish implements IBehaviour {
-    private int x;
+public abstract class Fish implements IBehaviour,Serializable {
+   private int x;
     private int y;
     public static int Sum=0;
     private UUID ID;

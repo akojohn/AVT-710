@@ -14,6 +14,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -63,7 +65,9 @@ public class Main extends JFrame{
 
         static JComboBox priorityGoldAI = new JComboBox();
         static JComboBox priorityGuppyAI = new JComboBox();
-       
+        static JButton save_files = new JButton("Сохранить");
+        static JButton load_files = new JButton("Загрузить");
+        static JButton console = new JButton("   Console application    ");
         
     /**
      * @param args the command line arguments
@@ -71,10 +75,10 @@ public class Main extends JFrame{
     Main(String name){
         super(name);
         panel = new JPanel(new FlowLayout());
-        panel.setPreferredSize(new Dimension(220,600));
+        panel.setPreferredSize(new Dimension(220,730));
         view = new HabitatView();
-        setPreferredSize(new Dimension(1000, 700));
-        setMinimumSize(new Dimension(800, 700));
+        setPreferredSize(new Dimension(1000, 750));
+        setMinimumSize(new Dimension(800, 750));
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(view);
@@ -98,6 +102,16 @@ public class Main extends JFrame{
 				HabitatView.Height = getHeight()-50;
 			}
 		});
+                addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent e) {
+                try {
+                    HabitatView.saveConfig();
+                } catch (Exception ee) {
+                    System.out.println("Ошибка сохранения");
+                }
+                System.exit(0);
+            }
+        });
         
         
     }

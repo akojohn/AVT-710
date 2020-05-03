@@ -18,17 +18,21 @@ public class GoldAI extends BaseAI {
     GoldAI(LinkedList<Fish> temp){
         list = temp;
     }
-
+    void set_list(LinkedList<Fish> temp){
+        list = temp;
+    }
 
 
     public synchronized void step(){
         for(Fish temp : list)
-            if (temp instanceof Gold && (HabitatView.ElapsedTime - temp.getBornTime() < Gold.life_time))
+            if (temp instanceof Gold && (HabitatView.ElapsedTime - temp.getBornTime() < Gold.life_time)){
                 temp.move(HabitatView.Width,HabitatView.Height);
+               
+            }
         try {
-            Thread.sleep(2);
+           Thread.sleep(2);
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+           e.printStackTrace();
+           }
     }
 }

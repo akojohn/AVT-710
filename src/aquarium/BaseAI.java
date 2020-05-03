@@ -3,27 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package aquarium;
 
 /**
  *
  * @author Dexp
  */
+public abstract class BaseAI extends Thread {
 
-public abstract class BaseAI extends Thread{
     boolean going = true;
     boolean sleeping = true;
 
     public static Object locker = new Object();
+
     public void run() {
-        while(going) {
+        while (going) {
             synchronized (locker) {
-                if(sleeping) {
+                if (sleeping) {
                     try {
-                      locker.wait();
-                     } catch (InterruptedException e) {
-                        System.err.println(e.getMessage());
+                        System.out.println("own:: Waiting");
+                        locker.wait();
+                        System.out.println("own:: Running again");
+                    } catch (InterruptedException e) {
+                        System.err.println("own:: Interrupted: " + e.getMessage());
                     }
                 }
                 step();
@@ -31,5 +33,6 @@ public abstract class BaseAI extends Thread{
         }
     }
 
-    public void step(){ }
+    public void step() {
+    }
 }
