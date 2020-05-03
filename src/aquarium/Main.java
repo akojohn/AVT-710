@@ -34,6 +34,9 @@ import javax.swing.JTextField;
  * @author Dexp
  */
 public class Main extends JFrame{
+
+
+
         HabitatView view;
         static Main frame;
         static JPanel panel;
@@ -69,16 +72,19 @@ public class Main extends JFrame{
         static JButton load_files = new JButton("Загрузить");
         static JButton console = new JButton("   Console application    ");
         
+        static JButton button_Server = new JButton("Connect");
+        static JButton button_XYI = new JButton("Комада 1");        
+        static JButton button_get_connect = new JButton("get_connect");        
     /**
      * @param args the command line arguments
      */
     Main(String name){
         super(name);
         panel = new JPanel(new FlowLayout());
-        panel.setPreferredSize(new Dimension(220,730));
+        panel.setPreferredSize(new Dimension(220,600));
         view = new HabitatView();
-        setPreferredSize(new Dimension(1000, 750));
-        setMinimumSize(new Dimension(800, 750));
+        setPreferredSize(new Dimension(1000, 800));
+        setMinimumSize(new Dimension(800, 800));
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(view);

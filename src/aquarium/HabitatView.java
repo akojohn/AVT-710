@@ -1,4 +1,8 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package aquarium;
 
 import java.awt.BorderLayout;
@@ -78,7 +82,8 @@ public class HabitatView extends JPanel {
     Image imgGuppy_down;
     Image imgGold_right;
     Image imgGold_left;
-
+    static Client client;
+    static Console Jconsole = null;
     //JPanel panel;
     public HabitatView() {
 
@@ -106,8 +111,7 @@ public class HabitatView extends JPanel {
         System.out.println(Height);
         System.out.println(Width);
         addMouseListener(new PanelMouseListener());
-        addKeyListener((KeyListener) new processKeyEvent());
-      
+        addKeyListener((KeyListener) new processKeyEvent());       
     }
 
     private void initComponents() {
@@ -190,9 +194,16 @@ public class HabitatView extends JPanel {
         Main.panel.add(Main.load_files);
         Main.save_files.addActionListener(e -> save_file());
         Main.panel.add(Main.save_files);
-        Main.console.addActionListener(e-> new Console(Main.frame));
+        Main.console.addActionListener(e-> Jconsole = new Console(Main.frame));
         Main.panel.add( Main.console);
-
+        
+        Main.button_Server.addActionListener(e-> client = new Client("localhost", 6100));
+        Main.panel.add( Main.button_Server);
+        
+                
+        Main.button_XYI.addActionListener(e-> client.get_config());
+        Main.panel.add( Main.button_XYI);
+        
         Main.switchGoldAI.addActionListener(e -> {
             if (Main.switchGoldAI.isSelected() == true) {
                 synchronized (habitat.ThreadGoldAI.locker) {
@@ -233,7 +244,7 @@ public class HabitatView extends JPanel {
         }
         Main.priorityGuppyAI.addActionListener(e -> habitat.ThreadGuppyAI.setPriority(Main.priorityGuppyAI.getSelectedIndex() + 1));
         Main.panel.add(Main.priorityGuppyAI);
-
+      
     }
 
     class processKeyEvent extends KeyAdapter {
