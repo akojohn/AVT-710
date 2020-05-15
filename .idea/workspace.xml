@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9c47a13b-6378-4ee2-8082-008baef84284" name="Default Changelist" comment="" />
+    <list default="true" id="2f234db2-1107-4308-9583-0eaa20d68184" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,22 +14,32 @@
       </list>
     </option>
   </component>
-  <component name="ProjectId" id="1b1QkM2rbZpA4RIceCLlqsnsjBO" />
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>Syst</find>
+    </findStrings>
+  </component>
+  <component name="ProjectId" id="1bLpBYPNfsY7DrpRz1wl0EXmuVo" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558755699489" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../LabWork4" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1559374932288" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.20229885" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="Main" />
+    </option>
   </component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
-      <module name="LabWork3" />
+      <module name="LabWork4" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -45,15 +55,15 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="9c47a13b-6378-4ee2-8082-008baef84284" name="Default Changelist" comment="" />
-      <created>1554438807074</created>
+      <changelist id="2f234db2-1107-4308-9583-0eaa20d68184" name="Default Changelist" comment="" />
+      <created>1555660727744</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1554438807074</updated>
+      <updated>1555660727744</updated>
     </task>
     <servers />
   </component>
-  <component name="TodoView" selected-index="2">
+  <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -63,45 +73,29 @@
     </todo-panel>
   </component>
   <component name="WindowStateProjectService">
-    <state x="440" y="94" key="#Project_Structure" timestamp="1587797283161">
+    <state x="440" y="94" key="#Project_Structure" timestamp="1588421103222">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1587797283161" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588658776426">
+    <state x="440" y="94" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1588421103222" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1588942293848">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588658776426" />
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1588655889654">
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1588942293848" />
+    <state width="1877" height="208" key="GridCell.Tab.0.bottom" timestamp="1588942646650">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588655889654" />
-    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1588655889654">
+    <state width="1877" height="208" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588942646650" />
+    <state width="1877" height="208" key="GridCell.Tab.0.center" timestamp="1588942646650">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588655889654" />
-    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1588655889654">
+    <state width="1877" height="208" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588942646650" />
+    <state width="1877" height="208" key="GridCell.Tab.0.left" timestamp="1588942646650">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588655889654" />
-    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1588655889654">
+    <state width="1877" height="208" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588942646650" />
+    <state width="1877" height="208" key="GridCell.Tab.0.right" timestamp="1588942646650">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588655889654" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1587797342421">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1587797342421" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1587797342421">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1587797342421" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1587797342421">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1587797342421" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1587797342421">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1587797342421" />
+    <state width="1877" height="208" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588942646650" />
   </component>
 </project>

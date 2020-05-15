@@ -1,6 +1,9 @@
 import java.awt.*;
 
 public interface IBehaviour {
+
+    void move();
+
     int getX();
 
     int getY();
@@ -8,10 +11,6 @@ public interface IBehaviour {
     int getHeight();
 
     int getWidth();
-
-    void setX(int x);
-
-    void setY(int y);
 
     Image getImage();
 }

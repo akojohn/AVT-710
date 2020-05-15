@@ -4,6 +4,8 @@ import java.awt.event.KeyListener;
 
 class InterfacePanel extends JPanel {
 
+     private static int height = 600;
+     private static int width = 180;
      JButton startSimulating = new JButton("Запуск");
      JButton stopSimulating = new JButton("Остановка");
      ButtonGroup visibleTimeSimulating = new ButtonGroup();
@@ -13,7 +15,6 @@ class InterfacePanel extends JPanel {
 
      TextField automobileDelayTextField = new TextField("Задержка появления авто", 16);
      TextField motorcycleDelayTextField = new TextField("Задержка появления мото", 16);
-
      JSlider motorcycleProbabilitySlider = new JSlider(JSlider.HORIZONTAL, 10, 90, 70);
      private Double[] automobileProbabilityBoxItems = {0.8, 0.6, 0.4, 0.2};
      JComboBox automobileProbabilityBox = new JComboBox(automobileProbabilityBoxItems);
@@ -22,8 +23,18 @@ class InterfacePanel extends JPanel {
      TextField motorcycleLifeTimeTextField = new TextField("Время жизни мото", 16);
      JButton showExistingObjects = new JButton("Показать транспорт");
 
+     JButton startMoveHorizontal = new JButton("СтартА");
+     JButton startMoveVertical = new JButton("СтартМ");
+     JButton stopMoveHorizontal = new JButton("СтопА");
+     JButton stopMoveVertical = new JButton("СтопМ");
+
+    private Integer[] automobileThreadPriorityBoxItems = {1, 2, 4, 8};
+    JComboBox automobileThreadPriorityBox = new JComboBox(automobileThreadPriorityBoxItems);
+    private Integer[] motorcycleThreadPriorityBoxItems = {1, 2, 4, 8};
+    JComboBox motorcycleThreadPriorityBox = new JComboBox(motorcycleThreadPriorityBoxItems);
+
      InterfacePanel() {
-         setBounds(600, 0, 180, 600);
+         setBounds(600, 0, width, height);
          setBackground(Color.lightGray);
          setLayout(new FlowLayout(FlowLayout.CENTER));
 
@@ -72,17 +83,34 @@ class InterfacePanel extends JPanel {
          secondPartPanel.add(motorcycleDelayTextField, gbcItems);
 
          JPanel thirdPanel = new JPanel();
-         thirdPanel.setPreferredSize(new Dimension(170,80));
+         thirdPanel.setPreferredSize(new Dimension(170,60));
          thirdPanel.setBackground(Color.GRAY);
-         thirdPanel.setLayout(new GridLayout(3,1,1,1));
+         thirdPanel.setLayout((new GridBagLayout()));
 
-         thirdPanel.add(automobileLifeTimeTextField);
-         thirdPanel.add(motorcycleLifeTimeTextField);
-         thirdPanel.add(showExistingObjects);
+         thirdPanel.add(automobileLifeTimeTextField, gbcItems);
+         thirdPanel.add(motorcycleLifeTimeTextField, gbcItems);
+         thirdPanel.add(showExistingObjects, gbcItems);
+
+         JPanel fourthPart = new JPanel();
+         fourthPart.setPreferredSize(new Dimension(170,80));
+         fourthPart.setBackground(Color.GRAY);
+         fourthPart.setLayout(new GridLayout(4,2,1,1));
+
+         JLabel automobileThreadPriorityBoxLabel = new JLabel("АвтоПриор:");
+         JLabel motorcycleThreadPriorityBoxLabel = new JLabel("МотоПриор:");
+         fourthPart.add(startMoveHorizontal);
+         fourthPart.add(stopMoveHorizontal);
+         fourthPart.add(startMoveVertical);
+         fourthPart.add(stopMoveVertical);
+         fourthPart.add(automobileThreadPriorityBoxLabel);
+         fourthPart.add(motorcycleThreadPriorityBoxLabel);
+         fourthPart.add(automobileThreadPriorityBox);
+         fourthPart.add(motorcycleThreadPriorityBox);
 
          add(firstPartPanel);
          add(secondPartPanel);
          add(thirdPanel);
+         add(fourthPart);
          setVisible(true);
      }
 
@@ -94,5 +122,13 @@ class InterfacePanel extends JPanel {
         showTimeSimulating.addKeyListener(l);
         hideTimeSimulating.addKeyListener(l);
         isShowResultTable.addKeyListener(l);
+    }
+
+    static int getHeightSize(){
+         return height;
+    }
+
+    static int getWidthSize(){
+        return width;
     }
 }

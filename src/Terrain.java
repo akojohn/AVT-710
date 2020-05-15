@@ -4,7 +4,7 @@ import java.awt.*;
 public class Terrain extends JImage{
     private int terrainX, terrainY;
     private int terrainWidth = 600;
-    private int terrainHeigth = 600;
+    private int terrainHeight = 600;
     private static Image Terrain = new ImageIcon("res/terrain.png").getImage();
 
     Terrain() {
@@ -24,7 +24,7 @@ public class Terrain extends JImage{
 
     @Override
     public int getHeight() {
-        return terrainHeigth;
+        return terrainHeight;
     }
 
     @Override
@@ -33,18 +33,13 @@ public class Terrain extends JImage{
     }
 
     @Override
-    public void setX(int x) {
-
-    }
-
-    @Override
-    public void setY(int y) {
-
-    }
-
-    @Override
     public Image getImage() {
         return Terrain;
+    }
+
+    @Override
+    public void move(){
+
     }
 }
 

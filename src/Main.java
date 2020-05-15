@@ -2,6 +2,7 @@
 //        Список транспортных средств на дороге состоит из двух категорий:
 //        автомобили и мотоциклы. Автомобили генерируются каждые N1 секунд с вероятностью P1.
 //        Мотоциклы генерируются каждые N2 секунд с вероятностью P
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Date;
 public final class Main {
 
     public static void main(String[] args) throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         Habitat theUniverse = new Habitat();
         theUniverse.addKeyListener(new KeyListener() {
             @Override
