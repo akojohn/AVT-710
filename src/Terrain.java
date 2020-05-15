@@ -33,6 +33,16 @@ public class Terrain extends JImage{
     }
 
     @Override
+    public void setX(int x) {
+
+    }
+
+    @Override
+    public void setY(int y) {
+
+    }
+
+    @Override
     public Image getImage() {
         return Terrain;
     }

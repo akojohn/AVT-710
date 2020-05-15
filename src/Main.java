@@ -17,21 +17,41 @@ public final class Main {
             @Override
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                if  (key == KeyEvent.VK_B && !theUniverse.isStartFlag && theUniverse.isEndFlag) {
-                    theUniverse.theUniverseStartTime = new Date().getTime();
-                    theUniverse.timerForAutomobile.start();
-                    theUniverse.timerForMotorcycle.start();
+                if  (key == KeyEvent.VK_B ) {
+                    if (!theUniverse.isStartFlag && theUniverse.isEndFlag) {
+                        theUniverse.isStartFlag = true;
+                        theUniverse.simulationTimer.setVisible(true);
+                        theUniverse.theUniverseStartTime = new Date().getTime();
+                        theUniverse.helpTimer.start();
+                        theUniverse.timerForAutomobile.start();
+                        theUniverse.timerForMotorcycle.start();
+                        theUniverse.isEndFlag = false;
+                        theUniverse.userPanel.startSimulating.setEnabled(false);
+                        theUniverse.userPanel.stopSimulating.setEnabled(true);
+                        theUniverse.panelMenuBar.startSimulating.setEnabled(false);
+                        theUniverse.panelMenuBar.stopSimulating.setEnabled(true);
+                    }
                 }
-                if (key == KeyEvent.VK_E && !theUniverse.isEndFlag && theUniverse.isStartFlag) {
-                    theUniverse.theUniverseTime = new Date().getTime() - theUniverse.theUniverseStartTime;
+                if (key == KeyEvent.VK_E )  if (!theUniverse.isEndFlag && theUniverse.isStartFlag) {
+                    theUniverse.isEndFlag = true;
+                    theUniverse.theUniverseTime = new Date().getTime() - theUniverse.theUniverseStartTime + theUniverse.theUniverseTime;
                     theUniverse.timerForAutomobile.stop();
                     theUniverse.timerForMotorcycle.stop();
-                    theUniverse.frameClearing();
-                    theUniverse.Statistics();
-                    theUniverse.dateClearing();
+                    theUniverse.helpTimer.stop();
+                    theUniverse.isStartFlag = false;
+                    if (theUniverse.isShowResultTableFlag) theUniverse.statistics();
+                    theUniverse.theUniverseStartTime = new Date().getTime();
+                    theUniverse.userPanel.startSimulating.setEnabled(true);
+                    theUniverse.userPanel.stopSimulating.setEnabled(false);
+                    theUniverse.panelMenuBar.stopSimulating.setEnabled(false);
+                    theUniverse.panelMenuBar.startSimulating.setEnabled(true);
                 }
                 if (key == KeyEvent.VK_T && theUniverse.isStartFlag && !theUniverse.isEndFlag) {
-                    theUniverse.simulationTimer.setVisible(theUniverse.isShow());
+                    theUniverse.show = !theUniverse.show;
+                    theUniverse.simulationTimer.setVisible(theUniverse.show);
+                    if (theUniverse.show == true)
+                    theUniverse.userPanel.visibleTimeSimulating.setSelected(theUniverse.userPanel.showTimeSimulating.getModel(), true);
+               else theUniverse.userPanel.visibleTimeSimulating.setSelected(theUniverse.userPanel.hideTimeSimulating.getModel(), true);
                 }
             }
             @Override
