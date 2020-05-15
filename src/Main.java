@@ -8,22 +8,21 @@ import java.util.Date;
 
 public final class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Habitat theUniverse = new Habitat();
         theUniverse.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
             }
-
             @Override
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
-                if  (key == KeyEvent.VK_B && !theUniverse.isStart && !theUniverse.isEnd) {
+                if  (key == KeyEvent.VK_B && !theUniverse.isStartFlag && theUniverse.isEndFlag) {
                     theUniverse.theUniverseStartTime = new Date().getTime();
                     theUniverse.timerForAutomobile.start();
                     theUniverse.timerForMotorcycle.start();
                 }
-                if (key == KeyEvent.VK_E && !theUniverse.isEnd && theUniverse.isStart) {
+                if (key == KeyEvent.VK_E && !theUniverse.isEndFlag && theUniverse.isStartFlag) {
                     theUniverse.theUniverseTime = new Date().getTime() - theUniverse.theUniverseStartTime;
                     theUniverse.timerForAutomobile.stop();
                     theUniverse.timerForMotorcycle.stop();
@@ -31,18 +30,18 @@ public final class Main {
                     theUniverse.Statistics();
                     theUniverse.dateClearing();
                 }
-                if (key == KeyEvent.VK_T && theUniverse.isStart && !theUniverse.isEnd) {
-                    theUniverse.jTimer.setVisible(theUniverse.isShow());
+                if (key == KeyEvent.VK_T && theUniverse.isStartFlag && !theUniverse.isEndFlag) {
+                    theUniverse.simulationTimer.setVisible(theUniverse.isShow());
                 }
             }
             @Override
             public void keyReleased(KeyEvent e) {
                 int key = e.getKeyCode();
                 if  (key == KeyEvent.VK_B){
-                    theUniverse.isStart = true;
+                    theUniverse.isStartFlag = true;
                 }
                 if (key == KeyEvent.VK_E) {
-                    theUniverse.isEnd = true;
+                    theUniverse.isEndFlag = true;
                 }
             }
         });

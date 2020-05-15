@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class Terrain extends JImage{
     private int terrainX, terrainY;
-    private int terrainWidth = 800;
+    private int terrainWidth = 600;
     private int terrainHeigth = 600;
     private static Image Terrain = new ImageIcon("res/terrain.png").getImage();
 

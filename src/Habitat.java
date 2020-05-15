@@ -1,66 +1,187 @@
 import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Habitat extends JFrame {
+class Habitat extends JFrame {
 
-    public long theUniverseStartTime = 0;
-    public  long theUniverseTime = 0;
+    long theUniverseStartTime = 0;
+    long theUniverseTime = 0;
+    private int amountAutomobiles = 0;
     private int amountVehicles = 0;
-    private ArrayList<JImage> universeVehicles = new ArrayList<>();
+    private ArrayList<JImage> universeVehicles = new ArrayList<>(); //
 
-    private final double probabilityAutomobile = 0.5;
-    private final double probabilityMotorcycle = 0.8;
+    private double probabilityAutomobile = 0.7;
+    private double probabilityMotorcycle = 0.8;
+    private final int defaultDelay = 500;
+    private int delayForAutomobile = defaultDelay;
+    private int delayForMotorcycle = defaultDelay;
 
     private final int frameWidth = 800;
-    private final int frameHeight = 600;
-    private final int motorcycleHeightSize = 64;
-    private final int motorcycleWidthSize = 121;
-    private final int autoHeightSize = 64;
-    private final int autoWidthSize = 192;
+    private final int frameHeight = 660;
 
-    private final int autoWidth = frameWidth - autoWidthSize - 50;
-    private final int autoHeight = frameHeight - autoHeightSize - 50;
-    private final int motorcycleWidth = frameWidth - motorcycleWidthSize - 50;
-    private final int motorcycleHeight = frameHeight - motorcycleHeightSize - 50;
-
-    public JLabel jTimer = new JLabel();
+    JLabel simulationTimer = new JLabel();
     private boolean show = true;
 
-    private JPanel statisticsPanel = new JPanel();
-    private JLabel firstPart = new JLabel();
-    private JLabel secondPart = new JLabel();
-
-    Timer timerForAutomobile = new Timer(500, e -> {
+    private Timer helpTimer = new Timer(50, e -> timerUpdate());
+    Timer timerForAutomobile = new Timer(delayForAutomobile, e -> {
         if (Math.random() <= probabilityAutomobile) {
             update(true);
         }
     });
-    Timer timerForMotorcycle = new Timer(800, e -> {
+    Timer timerForMotorcycle = new Timer(delayForMotorcycle, e -> {
         if (Math.random() <= probabilityMotorcycle) {
             update(false);
         }
     });
 
-    public boolean isEnd = false;
-    public boolean isStart = false;
+    boolean isEndFlag = true;
+    boolean isStartFlag = false;
+    private boolean isShowResultTableFlag = true;
 
-    Habitat() {
-        setBounds(283,84, frameWidth, frameHeight);
+    Habitat() throws Exception {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        setBounds(283, 84, frameWidth, frameHeight);
         add(new Terrain());
-        setVisible(true);
-        jTimer.setBounds(10, 15, 100, 12);
-        add(jTimer,0);
         setLayout(null);
 
-        statisticsPanel.setBounds(400, 200, 200, 200);
-        statisticsPanel.setBackground(Color.getHSBColor(110,110,100));
-
-        firstPart.setBounds(420,220,160, 20);
-        secondPart.setBounds(420,260,160, 20);
+        simulationTimer.setBounds(10, 3, 50, 12);
+        add(simulationTimer, 0);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//---------------------------------------------------------------------------------------------------
+        InterfacePanel userPanel = new InterfacePanel();
+        add(userPanel);
+        MenuPanelBar panelMenuBar = new MenuPanelBar();
+        add(panelMenuBar, 0);
+        setJMenuBar(panelMenuBar);
+
+        userPanel.stopSimulating.setEnabled(false);
+        userPanel.isShowResultTable.setSelected(true);
+        panelMenuBar.stopSimulating.setEnabled(false);
+        panelMenuBar.isShowResultTable.setSelected(true);
+
+        userPanel.startSimulating.addActionListener(e -> {
+            if (!isStartFlag && isEndFlag) {
+                isStartFlag = true;
+                theUniverseStartTime = new Date().getTime();
+                helpTimer.start();
+                timerForAutomobile.start();
+                timerForMotorcycle.start();
+                isEndFlag = false;
+                userPanel.startSimulating.setEnabled(false);
+                userPanel.stopSimulating.setEnabled(true);
+                panelMenuBar.startSimulating.setEnabled(false);
+                panelMenuBar.stopSimulating.setEnabled(true);
+            }
+        });
+        userPanel.stopSimulating.addActionListener(e -> {
+            if (!isEndFlag && isStartFlag) {
+                isEndFlag = true;
+                theUniverseTime = new Date().getTime() - theUniverseStartTime + theUniverseTime;
+                timerForAutomobile.stop();
+                timerForMotorcycle.stop();
+                helpTimer.stop();
+                isStartFlag = false;
+                if (isShowResultTableFlag) Statistics();
+                theUniverseStartTime = new Date().getTime();
+                userPanel.startSimulating.setEnabled(true);
+                userPanel.stopSimulating.setEnabled(false);
+                panelMenuBar.stopSimulating.setEnabled(false);
+                panelMenuBar.startSimulating.setEnabled(true);
+            }
+        });
+        userPanel.isShowResultTable.addActionListener(e -> {
+            if  (userPanel.isShowResultTable.isSelected()) {
+                isShowResultTableFlag = true;
+                panelMenuBar.isShowResultTable.setSelected(true);
+            }
+            else{
+                isShowResultTableFlag = false;
+                panelMenuBar.isShowResultTable.setSelected(false);
+            }
+        });
+        userPanel.showTimeSimulating.addActionListener(e -> simulationTimer.setVisible(true));
+        userPanel.hideTimeSimulating.addActionListener(e -> simulationTimer.setVisible(false));
+
+        userPanel.automobileDelayTextField.addActionListener(e-> {
+            try {
+                delayForAutomobile = Integer.parseInt(userPanel.automobileDelayTextField.getText());
+                timerForAutomobile.setInitialDelay(delayForAutomobile);
+                timerForAutomobile.setDelay(delayForAutomobile);
+            }
+            catch (IllegalArgumentException ex) {
+                ErrorFrame errorDataTypeDelayForAutomobile = new ErrorFrame(this);
+                errorDataTypeDelayForAutomobile.setVisible(true);
+                delayForAutomobile = defaultDelay;
+            }
+        });
+        userPanel.motorcycleDelayTextField.addActionListener(e-> {
+            try {
+                delayForMotorcycle = Integer.parseInt(userPanel.motorcycleDelayTextField.getText());
+                timerForMotorcycle.setInitialDelay(delayForMotorcycle);
+                timerForMotorcycle.setDelay(delayForMotorcycle);
+            }
+            catch (IllegalArgumentException ex) {
+                ErrorFrame errorDataTypeDelayForMotorcycle = new ErrorFrame(this);
+                errorDataTypeDelayForMotorcycle.setVisible(true);
+                delayForMotorcycle = defaultDelay;
+            }
+
+        });
+        userPanel.motorcycleProbabilitySlider.addChangeListener(e -> probabilityMotorcycle =
+                (double)userPanel.motorcycleProbabilitySlider.getValue()/100);
+        userPanel.automobileProbabilityBox.addActionListener(e -> probabilityAutomobile =
+                (Double)userPanel.automobileProbabilityBox.getSelectedItem());
+        panelMenuBar.simulationItem.addActionListener(e ->{});
+        panelMenuBar.exitItem.addActionListener(e -> {
+                frameClearing();
+                dateClearing();
+                System.exit(1);
+        });
+
+        panelMenuBar.startSimulating.addActionListener(e -> {
+            if (!isStartFlag && isEndFlag) {
+                isStartFlag = true;
+                theUniverseStartTime = new Date().getTime();
+                helpTimer.start();
+                timerForAutomobile.start();
+                timerForMotorcycle.start();
+                isEndFlag = false;
+                userPanel.startSimulating.setEnabled(false);
+                userPanel.stopSimulating.setEnabled(true);
+                panelMenuBar.startSimulating.setEnabled(false);
+                panelMenuBar.stopSimulating.setEnabled(true);
+            }
+        });
+        panelMenuBar.stopSimulating.addActionListener(e -> {
+            if (!isEndFlag && isStartFlag) {
+                isEndFlag = true;
+                theUniverseTime = new Date().getTime() - theUniverseStartTime + theUniverseTime;
+                timerForAutomobile.stop();
+                timerForMotorcycle.stop();
+                helpTimer.stop();
+                isStartFlag = false;
+                if (isShowResultTableFlag) Statistics();
+                theUniverseStartTime = new Date().getTime();
+                userPanel.startSimulating.setEnabled(true);
+                userPanel.stopSimulating.setEnabled(false);
+                panelMenuBar.stopSimulating.setEnabled(false);
+                panelMenuBar.startSimulating.setEnabled(true);
+            }
+        });
+        panelMenuBar.isShowResultTable.addActionListener(e ->{
+            if  (panelMenuBar.isShowResultTable.isSelected()) {
+                isShowResultTableFlag = true;
+                userPanel.isShowResultTable.setSelected(true);
+            }
+            else{
+                isShowResultTableFlag = false;
+                userPanel.isShowResultTable.setSelected(false);
+            }
+        });
+
+        setVisible(true);
     }
 
     private void addVehicle(JImage Vehicle) {
@@ -69,14 +190,28 @@ public class Habitat extends JFrame {
         amountVehicles++;
     }
 
+    private void timerUpdate (){
+        simulationTimer.setText(String.valueOf(new Date().getTime() - theUniverseStartTime + theUniverseTime));
+        repaint();
+    }
     private void update(boolean is_automobile) {
-        jTimer.setText(String.valueOf(new Date().getTime() - theUniverseStartTime));
+        simulationTimer.setText(String.valueOf(new Date().getTime() - theUniverseStartTime + theUniverseTime));
         if (is_automobile) {
+            int autoWidthSize = 192;
+            int autoWidth = frameWidth - autoWidthSize - 250;
             int tempX = (int) (autoWidth * Math.random());
+            int autoHeightSize = 64;
+            int autoHeight = frameHeight - autoHeightSize - 50;
             int tempY = (int) (autoHeight * Math.random());
             addVehicle(new Automobile(tempX, tempY));
-        } else {
+            amountAutomobiles++;
+        }
+        else {
+            int motorcycleWidthSize = 121;
+            int motorcycleWidth = frameWidth - motorcycleWidthSize - 250;
             int tempX = (int) (motorcycleWidth * Math.random());
+            int motorcycleHeightSize = 64;
+            int motorcycleHeight = frameHeight - motorcycleHeightSize - 50;
             int tempY = (int) (motorcycleHeight * Math.random());
             addVehicle(new Motorcycle(tempX, tempY));
         }
@@ -90,28 +225,27 @@ public class Habitat extends JFrame {
 
     void frameClearing() {
         getContentPane().removeAll();
-        while (universeVehicles.size() > 0)
-            universeVehicles.remove(0);
-        universeVehicles.clear();
         getContentPane().repaint();
     }
 
     void dateClearing() {
+        while (universeVehicles.size() > 0)
+            universeVehicles.remove(0);
+        universeVehicles.clear();
+        amountAutomobiles = 0;
         amountVehicles = 0;
         theUniverseTime = 0;
     }
 
-    void Statistics(){
-        firstPart.setText("Количество элементов: " + amountVehicles);
-        Font font = new Font("Italic", Font.BOLD, 11);
-        firstPart.setFont(font);
-        firstPart.setForeground(Color.blue);
-        secondPart.setText("Время работы: " + theUniverseTime);
-        add(statisticsPanel,0);
-        add(firstPart,0);
-        add(secondPart,0);
-
-        setVisible(true);
-        repaint();
+    void Statistics() {
+        MessagePanel resultFrame = new MessagePanel(amountAutomobiles, amountVehicles, theUniverseTime, this);
+        resultFrame.okButton.addActionListener(e -> {
+            resultFrame.dispose();
+            dateClearing();
+            frameClearing();
+            System.exit(1);
+        });
+        resultFrame.cancelButton.addActionListener(e -> resultFrame.dispose());
+        resultFrame.setVisible(true);
     }
 }
